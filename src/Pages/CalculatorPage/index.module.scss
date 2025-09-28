@@ -1,0 +1,119 @@
+.calculator {
+  padding: 60px 0;
+  .bgImage {
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    h1 {
+      position: absolute;
+      font-size: 30px;
+      width: 600px;
+      text-wrap: wrap;
+      color: #032062;
+      text-align: center;
+      @media screen and (max-width: 630px) {
+        width: 400px;
+      }
+      @media screen and (max-width: 420px) {
+        width: 280px;
+        font-size: 20px;
+      }
+    }
+  }
+  .calc {
+    .header {
+      width: 100%;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      div {
+        width: 100px;
+        border: 2px solid #032062;
+      }
+      .icon {
+        color: #032062;
+        font-size: 50px;
+      }
+    }
+  }
+  .container {
+    width: 90%;
+    margin: 0 auto;
+    .content {
+      width: 50%;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      border-radius: 20px;
+      margin: 0 auto;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+      h3 {
+        text-align: center;
+        color: #032062;
+        padding-bottom: 15px;
+      }
+      .inps {
+        display: flex;
+        flex-wrap: wrap;
+        .input,
+        .select {
+          width: 50%;
+          @media screen and (max-width: 565px) {
+            width: 100%;
+          }
+          padding: 10px;
+          input,
+          select {
+            width: 100%;
+            padding: 5px;
+            border-radius: 10px;
+            outline: none;
+            border: 2px solid #032062;
+          }
+        }
+
+        .select {
+          width: 100%;
+          // color: grey;
+          option {
+            background-color: #032062;
+            color: white;
+          }
+        }
+      }
+      .btns {
+        display: flex;
+        padding: 10px;
+        justify-content: end;
+        @media screen and (max-width: 565px) {
+          justify-content: center;
+        }
+        gap: 20px;
+        button {
+          border: none;
+          padding: 5px 10px;
+          font-size: 14px;
+          border-radius: 10px;
+          &:nth-of-type(1) {
+            background-color: #032062;
+            color: white;
+          }
+          &:nth-of-type(2) {
+            background-color: brown;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}

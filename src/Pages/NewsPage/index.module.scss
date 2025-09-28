@@ -1,0 +1,117 @@
+.news {
+  padding: 60px 0;
+  width: 100vw;
+  min-height: 100vh;
+  .bgImage {
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    h1 {
+      position: absolute;
+      font-size: 30px;
+      width: 600px;
+      text-wrap: wrap;
+      color: #032062;
+      text-align: center;
+      @media screen and (max-width: 630px) {
+        width: 400px ;
+      }
+      @media screen and (max-width: 420px) {
+        width: 280px ;
+        font-size: 20px;
+      }
+    }
+  }
+  .newsList {
+    .header {
+      width: 100%;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      div {
+        width: 100px;
+        border: 2px solid #032062;
+      }
+      .icon {
+        color: #032062;
+        font-size: 50px;
+      }
+    }
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      .card {
+        width: calc(100% / 4);
+        @media screen and (max-width: 900px) {
+            width: calc(100% / 3);
+          }
+        @media screen and (max-width: 750px) {
+            width: calc(100% / 2);
+          }
+        @media screen and (max-width: 400px) {
+            width: calc(100% / 1);
+          }
+        height: 275px;
+        padding: 10px;
+        .cardContent {
+          border: 2px solid transparent;
+          cursor: pointer;
+          transition: 0.2s;
+          &:hover {
+            border: 2px solid #032062;
+          }
+          width: 100%;
+          height: 100%;
+          background-color: #fff;
+          border-radius: 10px;
+          overflow: hidden;
+          box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+          .cardImage {
+            width: 100%;
+            height: 150px;
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+          .cardText {
+            width: 100%;
+            height: 100px;
+            padding: 3px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            p {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-size: 12px;
+              span:nth-of-type(2) {
+                color: white;
+                padding: 3px 5px;
+                background-color: #1976D2;
+                width: 70px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 20px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

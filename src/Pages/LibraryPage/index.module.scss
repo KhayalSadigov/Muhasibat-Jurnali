@@ -1,0 +1,145 @@
+.library {
+  padding: 60px 0;
+  width: 100vw;
+  min-height: 100vh;
+  .bgImage {
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    h1 {
+      position: absolute;
+      font-size: 30px;
+      width: 650px;
+      text-wrap: wrap;
+      color: #032062;
+      text-align: center;
+      @media screen and (max-width: 630px) {
+        width: 400px;
+      }
+      @media screen and (max-width: 420px) {
+        width: 280px;
+        font-size: 20px;
+      }
+    }
+  }
+  .bookList {
+    .header {
+      width: 100%;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      div {
+        width: 100px;
+        border: 2px solid #032062;
+      }
+      .icon {
+        color: #032062;
+        font-size: 50px;
+      }
+    }
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      // gap: 20px;
+      justify-content: center;
+      .card {
+        width: calc(100% / 4);
+        padding: 10px;
+        margin-bottom: 20px;
+        @media screen and (max-width: 900px) {
+          width: calc(100% / 3);
+        }
+        @media screen and (max-width: 750px) {
+          width: calc(100% / 2);
+        }
+        @media screen and (max-width: 500px) {
+          width: 100%;
+        }
+        .cardContent {
+          width: 100%;
+          aspect-ratio: 3/4;
+          border-radius: 10px;
+          position: relative;
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+          }
+          .glass {
+            padding: 10px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 0.2s;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 99%;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.633);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            gap: 10px;
+            button {
+            //   visibility: hidden;
+              transition: 0.1s;
+              width: 80%;
+              background-color: #ffffff00;
+              color: rgba(255, 255, 255, 0);
+              border: none;
+              padding: 10px;
+              border-radius: 5px;
+              cursor: pointer;
+            }
+            h3 {
+              bottom: 50%;
+              left: 50%;
+              transform: translate(-50%, 50%);
+              color: white;
+              position: absolute;
+              transition: 0.1s;
+            }
+            &:hover {
+              //   cursor: pointer;
+              //   background: rgba(0, 0, 0, 0);
+              button {
+                &:nth-of-type(1) {
+                  background-color: #032062;
+                  color: #fff;
+                  &:hover {
+                    background-color: #001139;
+                  }
+                }
+                &:nth-of-type(2) {
+                  background-color: #ffde20;
+                  color: #fff;
+                  &:hover {
+                    background-color: #eac700;
+                  }
+                }
+              }
+              h3 {
+                color: #03206200;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
