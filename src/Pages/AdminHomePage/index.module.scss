@@ -1,0 +1,17 @@
+.adminHome{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // background: #fff;
+    flex-direction: column  ;
+    img{
+        width: 300px;
+    }
+    h1{
+        transform: translateY(-30px);
+        width: 450px;
+        text-align: center;
+    }
+}

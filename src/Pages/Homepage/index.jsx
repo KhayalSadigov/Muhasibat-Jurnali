@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import bgImage from "./../../Assets/heroImage.jpg";
 import styles from "./index.module.scss";
+import { useEffect } from "react";
 
 function HomePage() {
   const navigator = useNavigate();
+  useEffect(() => {
+    document.title = "Mühasibat Jurnalı";
+  }, []);
   return (
     <section className={styles.hero}>
       <div className={styles.bgImage}>
