@@ -1,7 +1,39 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.scss";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
+import { useNavigate } from "react-router-dom";
+import dataContext from "../../Contexts/GlobalState";
 
 function AddUserPage() {
+  const store = useContext(dataContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const tokenAdmin = localStorage.getItem("tokenAdmin");
+    const adminID = localStorage.getItem("admin");
+    if (!tokenAdmin || !adminID) {
+      store.admin.setData(null);
+      navigate("/admin/login");
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + adminID, {
+          headers: {
+            Authorization: `Bearer ${tokenAdmin}`,
+          },
+        })
+        .then((response) => {
+          store.admin.setData(response.data.data.user);
+          console.log(response.data.data.user);
+        })
+        .catch(() => {
+          store.admin.setData(null);
+          localStorage.removeItem("tokenAdmin");
+          localStorage.removeItem("admin");
+          navigate("/admin/login");
+        });
+    }
+  }, []);
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",

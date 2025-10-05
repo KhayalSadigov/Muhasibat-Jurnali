@@ -5,9 +5,39 @@ import newsData from "../../Data/newsData";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
+import { useContext, useEffect } from "react";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
+import dataContext from "../../Contexts/GlobalState";
 
 function AdminNewsPage() {
+  const store = useContext(dataContext);
   const navigate = useNavigate();
+  useEffect(() => {
+    const tokenAdmin = localStorage.getItem("tokenAdmin");
+    const adminID = localStorage.getItem("admin");
+    if (!tokenAdmin || !adminID) {
+      store.admin.setData(null);
+      navigate("/admin/login");
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + adminID, {
+          headers: {
+            Authorization: `Bearer ${tokenAdmin}`,
+          },
+        })
+        .then((response) => {
+          store.admin.setData(response.data.data.user);
+          console.log(response.data.data.user);
+        })
+        .catch(() => {
+          store.admin.setData(null);
+          localStorage.removeItem("tokenAdmin");
+          localStorage.removeItem("admin");
+          navigate("/admin/login");
+        });
+    }
+  }, []);
   return (
     <div className={styles.adminNews}>
       <div className={styles.header}>
@@ -33,10 +63,10 @@ function AdminNewsPage() {
             </tr>
           </thead>
           <tbody>
-            {newsData.map((news,i) => {
+            {newsData.map((news, i) => {
               return (
                 <tr>
-                  <td>{i+1}</td>
+                  <td>{i + 1}</td>
                   <td>
                     <img src={news.image} alt={news.title} />
                   </td>

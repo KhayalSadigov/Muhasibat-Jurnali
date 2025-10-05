@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.scss";
+import dataContext from "../../Contexts/GlobalState";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
 
 function AddBookPage() {
+  const store = useContext(dataContext);
+  const navigate = useNavigate(); // Router istifadə olunur
+  
   const [formData, setFormData] = useState({
     title: "",
     desc: "",
@@ -17,7 +24,7 @@ function AddBookPage() {
     });
   };
 
-  const handleImageChange = (e) => {  
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -40,6 +47,31 @@ function AddBookPage() {
     console.log("Yeni kitab:", newBook);
     // burda API-ə göndərə və ya state-ə əlavə edə bilərsən
   };
+
+  useEffect(() => {
+    const tokenAdmin = localStorage.getItem("tokenAdmin");
+    const adminID = localStorage.getItem("admin");
+    if (!tokenAdmin || !adminID) {
+      store.admin.setData(null);
+      navigate("/admin/login");
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + adminID, {
+          headers: {
+            Authorization: `Bearer ${tokenAdmin}`,
+          },
+        })
+        .then((response) => {
+          store.admin.setData(response.data.data.user);
+        })
+        .catch(() => {
+          navigate("/admin/login");
+          store.admin.setData(null);
+          localStorage.removeItem("tokenAdmin");
+          localStorage.removeItem("admin");
+        });
+    }
+  }, []);
 
   return (
     <div className={styles.addBookPage}>

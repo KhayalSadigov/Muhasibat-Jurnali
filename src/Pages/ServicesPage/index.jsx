@@ -4,8 +4,37 @@ import bg from "./../../Assets/heroImage.jpg";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import serviceData from "../../Data/serviceData";
+import dataContext from "../../Contexts/GlobalState";
+import { useContext, useEffect } from "react";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
 
 function ServicesPage() {
+  const store = useContext(dataContext);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userID = localStorage.getItem("user");
+    if (!token || !userID) {
+      store.user.setData(null);
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + userID, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          store.user.setData(response.data.data.user);
+          console.log(response.data.data.user);
+        })
+        .catch((error) => {
+          store.user.setData(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        });
+    }
+  }, []);
   return (
     <>
       <section></section>
@@ -39,7 +68,6 @@ function ServicesPage() {
                   </div>
                 );
               })}
-              
           </div>
         </div>
       </section>

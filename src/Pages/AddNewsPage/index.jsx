@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.scss";
+import Base_Url_Server from "../../Constants/baseUrl";
+import axios from "axios";
+import dataContext from "../../Contexts/GlobalState";
+import { useNavigate } from "react-router-dom";
 
 function AddNewsPage() {
+  const store = useContext(dataContext);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -9,7 +15,31 @@ function AddNewsPage() {
     category: "",
     date: "",
   });
-
+useEffect(() => {
+    const tokenAdmin = localStorage.getItem("tokenAdmin");
+    const adminID = localStorage.getItem("admin");
+    if (!tokenAdmin || !adminID) {
+      store.admin.setData(null);
+      navigate("/admin/login");
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + adminID, {
+          headers: {
+            Authorization: `Bearer ${tokenAdmin}`,
+          },
+        })
+        .then((response) => {
+          store.admin.setData(response.data.data.user);
+          console.log(response.data.data.user);
+        })
+        .catch(() => {
+          store.admin.setData(null);
+          localStorage.removeItem("tokenAdmin");
+          localStorage.removeItem("admin");
+          navigate("/admin/login");
+        });
+    }
+  }, []);
   const handleChange = (e) => {
     setFormData({
       ...formData,

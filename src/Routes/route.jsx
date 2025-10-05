@@ -17,6 +17,10 @@ import AddBookPage from "../Pages/AddBookPage";
 import AddServicePage from "../Pages/AddServicePage";
 import AddUserPage from "../Pages/AddUserPage";
 import AdminProfilePage from "../Pages/AdminProfilePage";
+import LoginPage from "../Pages/LoginPage";
+import ProfilPage from "../Pages/ProfilPage";
+import AdminLoginPage from "../Pages/AdminLoginPage";
+import RegisterPage from "../Pages/RegisterPage";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +50,18 @@ const router = createBrowserRouter([
       {
         path: "about",
         element: <AboutPage />,
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        path: "register",
+        element: <RegisterPage />,
+      },
+      {
+        path: "profile",
+        element: <ProfilPage />,
       },
     ],
   },
@@ -94,6 +110,10 @@ const router = createBrowserRouter([
         element: <AdminProfilePage />,
       },
     ],
+  },
+  {
+    path: "/admin/login",
+    element: <AdminLoginPage />,
   },
 ]);
 

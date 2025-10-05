@@ -1,0 +1,144 @@
+.profileContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f0f4ff, #dfe9f3);
+  padding: 20px;
+  padding-top: 80px;
+}
+
+.profileCard {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  transition: transform 0.3s ease;
+
+}
+
+.avatar {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  border: 5px solid #4a90e2;
+  box-shadow: 0 0 15px rgba(74, 144, 226, 0.4);
+  background: #eee;
+}
+
+.email {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 25px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+
+  p {
+    margin: 0;
+    padding: 12px 15px;
+    border-radius: 10px;
+    background: #f8faff;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+    strong {
+      color: #4a90e2;
+      font-weight: 600;
+    }
+  }
+}
+
+.logoutButton {
+  padding: 12px 20px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff6b6b, #d64545);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, #d64545, #a83232);
+  }
+}
+.changePasswordButton {
+  padding: 12px 20px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4dabf7, #1c7ed6);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 15px;
+  &:hover {
+    background: linear-gradient(135deg, #1c7ed6, #1864ab);
+    box-shadow: 0 6px 14px rgba(77, 171, 247, 0.4);
+  }
+}
+
+.passwordForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+  input {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.2s ease;
+
+    &:focus {
+      border-color: #1c7ed6;
+      box-shadow: 0 0 0 3px rgba(28, 126, 214, 0.15);
+    }
+  }
+
+  .savePasswordButton {
+    padding: 12px 20px;
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #51cf66, #37b24d);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(81, 207, 102, 0.3);
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #37b24d, #2b8a3e);
+      transform: scale(1.05);
+      box-shadow: 0 6px 14px rgba(81, 207, 102, 0.4);
+    }
+  }
+
+  .message {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #333;
+    text-align: center;
+  }
+}

@@ -1,14 +1,41 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.scss";
 import bg from "./../../Assets/heroImage.jpg";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import newsData from "../../Data/newsData";
 import Footer from "../../Layouts/Footer";
 import { useNavigate } from "react-router-dom";
+import dataContext from "../../Contexts/GlobalState";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
 
 function NewsPage() {
   const [news, setnews] = useState(newsData);
   const navigator = useNavigate();
+  const store = useContext(dataContext);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userID = localStorage.getItem("user");
+    if (!token || !userID) {
+      store.user.setData(null);
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + userID, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          store.user.setData(response.data.data.user);
+        })
+        .catch((error) => {
+          store.user.setData(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        });
+    }
+  }, []);
   useEffect(() => {
     document.title = "Xəbərlər";
   }, []);

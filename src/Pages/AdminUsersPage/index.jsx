@@ -5,10 +5,39 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Tooltip from "@mui/material/Tooltip";
 import { useNavigate } from "react-router-dom";
 import userData from "../../Data/userData";
+import { useContext, useEffect } from "react";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
+import dataContext from "../../Contexts/GlobalState";
 
 function AdminUsersPage() {
   const navigate = useNavigate();
-
+  const store = useContext(dataContext);
+  useEffect(() => {
+    const tokenAdmin = localStorage.getItem("tokenAdmin");
+    const adminID = localStorage.getItem("admin");
+    if (!tokenAdmin || !adminID) {
+      store.admin.setData(null);
+      navigate("/admin/login");
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + adminID, {
+          headers: {
+            Authorization: `Bearer ${tokenAdmin}`,
+          },
+        })
+        .then((response) => {
+          store.admin.setData(response.data.data.user);
+          console.log(response.data.data.user);
+        })
+        .catch(() => {
+          store.admin.setData(null);
+          localStorage.removeItem("tokenAdmin");
+          localStorage.removeItem("admin");
+          navigate("/admin/login");
+        });
+    }
+  }, []);
   return (
     <div className={styles.adminUsers}>
       <div className={styles.header}>
@@ -35,9 +64,9 @@ function AdminUsersPage() {
             </tr>
           </thead>
           <tbody>
-            {userData.map((user,i) => (
+            {userData.map((user, i) => (
               <tr key={user.id}>
-                <td>{i+1}</td>
+                <td>{i + 1}</td>
                 <td className={styles.username}>{user.username}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>

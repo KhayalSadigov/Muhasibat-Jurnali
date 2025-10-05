@@ -1,12 +1,38 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import styles from "./index.module.scss";
 import Footer from "../../Layouts/Footer";
 import bg from "./../../Assets/heroImage.jpg";
 import BookIcon from "@mui/icons-material/Book";
 import bookData from "../../Data/bookData";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import PreviewIcon from "@mui/icons-material/Preview";
+import dataContext from "../../Contexts/GlobalState";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
 function LibraryPage() {
+  const store = useContext(dataContext);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userID = localStorage.getItem("user");
+    if (!token || !userID) {
+      store.user.setData(null);
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + userID, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          store.user.setData(response.data.data.user);
+          console.log(response.data.data.user);
+        })
+        .catch((error) => {
+          store.user.setData(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        });
+    }
+  }, []);
   useEffect(() => {
     document.title = "Kitabxana";
   }, []);

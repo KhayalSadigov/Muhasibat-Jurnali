@@ -29,8 +29,8 @@
         color: white;
         font-weight: 500;
         @media screen and (max-width: 430px) {
-        display: none !important;
-      }
+          display: none !important;
+        }
       }
     }
     .right {
@@ -80,6 +80,14 @@
           //       background-color: #fff;
           //     }
           //   }
+        }
+        .person {
+          margin-left: 20px;
+          border-radius: 50px;
+          width: 35px;
+          height: 35px;
+          background-color: #fff;
+          color: #032062;
         }
       }
     }

@@ -2,7 +2,36 @@ import styles from "./index.module.scss";
 import bg from "./../../Assets/heroImage.jpg";
 import Footer from "../../Layouts/Footer";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import { useContext, useEffect } from "react";
+import dataContext from "../../Contexts/GlobalState";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
 function CalculatorPage() {
+  const store = useContext(dataContext);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userID = localStorage.getItem("user");
+    if (!token || !userID) {
+      store.user.setData(null);
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + userID, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          store.user.setData(response.data.data.user);
+          console.log(response.data.data.user);
+        })
+        .catch((error) => {
+          store.user.setData(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        });
+    }
+  }, []);
   return (
     <>
       <section className={styles.calculator}>
@@ -35,8 +64,10 @@ function CalculatorPage() {
                   <input type="number" placeholder="İllik nominal gəlir (%)" />
                 </div>
                 <div className={styles.select}>
-                  <select >
-                    <option value="" selected hidden disabled>Dövr növü</option>
+                  <select>
+                    <option value="" selected hidden disabled>
+                      Dövr növü
+                    </option>
                     <option value="">Aylıq</option>
                     <option value="">İllik</option>
                   </select>

@@ -6,7 +6,6 @@ import dataContext from "../../Contexts/GlobalState";
 function Sidebar() {
   const navigator = useNavigate();
   const store = useContext(dataContext);
-  console.log(store);
   return (
     <>
       <div
@@ -36,9 +35,10 @@ function Sidebar() {
           </li>
           <select
             onChange={(e) => {
-              navigator(`/library/${e.target.value}`);
+              const data = e.target.value;
               e.target.value = "";
               store.sidebar.setData(!store.sidebar.data);
+              navigator(`/library/${data}`);
             }}
             style={
               window.location.pathname == "/library"
@@ -46,7 +46,7 @@ function Sidebar() {
                 : {}
             }
           >
-            <option value="" selected hidden>
+            <option value=""  selected hidden>
               Kitabxana
             </option>
             <option value="qanun-vericilik">Qanun vericilik</option>

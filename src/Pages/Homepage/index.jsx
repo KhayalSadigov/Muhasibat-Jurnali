@@ -1,13 +1,44 @@
 import { useNavigate } from "react-router-dom";
 import bgImage from "./../../Assets/heroImage.jpg";
 import styles from "./index.module.scss";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import dataContext from "../../Contexts/GlobalState";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
 
 function HomePage() {
   const navigator = useNavigate();
+  const store = useContext(dataContext);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userID = localStorage.getItem("user");
+    if (!token || !userID) {
+      store.user.setData(null);
+    } else {
+      axios
+        .get(Base_Url_Server + "users/" + userID, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          store.user.setData(response.data.data.user);
+          console.log(response.data.data.user);
+        })
+        .catch((error) => {
+          console.log(error)
+          store.user.setData(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        });
+    }
+  }, []);
   useEffect(() => {
     document.title = "Mühasibat Jurnalı";
+    window.scrollTo(0, 0);
   }, []);
+
   return (
     <section className={styles.hero}>
       <div className={styles.bgImage}>
@@ -41,7 +72,7 @@ function HomePage() {
       </div>
       <a
         href="https://www.instagram.com/reverdigitallab.az?igsh=MTFvamdoOXN1dWxvZg=="
-                  target="_blank"
+        target="_blank"
         className={styles.footer}
       >
         © Developed by Rever Digital Lab

@@ -4,6 +4,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import dataContext from "../../Contexts/GlobalState";
 import MenuIcon from "@mui/icons-material/Menu";
+import Person3Icon from "@mui/icons-material/Person3";
 function Header() {
   const navigator = useNavigate();
   const store = useContext(dataContext);
@@ -11,7 +12,12 @@ function Header() {
   return (
     <div className={styles.header}>
       <div className={styles.container}>
-        <div onClick={()=>{navigator('/')}} className={styles.left}>
+        <div
+          onClick={() => {
+            navigator("/");
+          }}
+          className={styles.left}
+        >
           <img src={logo} className={styles.logo} alt="accountant" />
           <h3 className={styles.title}>Mühasibat Jurnalı</h3>
         </div>
@@ -31,8 +37,9 @@ function Header() {
             </li>
             <select
               onChange={(e) => {
-                navigator(`/library/${e.target.value}`);
+                const data = e.target.value;
                 e.target.value = "";
+                navigator(`/library/${data}`);
               }}
               style={
                 window.location.pathname == "/library"
@@ -87,10 +94,31 @@ function Header() {
             >
               Kalkulyator
             </li>
-            {/* <li></li> */}
+            <li
+              className={styles.person}
+              onClick={() => {
+                if (store.user.data) {
+                  navigator("/profile");
+                } else {
+                  navigator("/login");
+                }
+              }}
+              style={
+                window.location.pathname == "/calculator"
+                  ? { color: "#032062", backgroundColor: "white" }
+                  : {}
+              }
+            >
+              <Person3Icon />
+            </li>
           </ul>
         </div>
-        <MenuIcon onClick={()=>{store.sidebar.setData(!store.sidebar.data)}} className={styles.icons}   />
+        <MenuIcon
+          onClick={() => {
+            store.sidebar.setData(!store.sidebar.data);
+          }}
+          className={styles.icons}
+        />
       </div>
     </div>
   );
