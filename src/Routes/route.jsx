@@ -21,6 +21,11 @@ import LoginPage from "../Pages/LoginPage";
 import ProfilPage from "../Pages/ProfilPage";
 import AdminLoginPage from "../Pages/AdminLoginPage";
 import RegisterPage from "../Pages/RegisterPage";
+import AdminCategoryPage from "../Pages/AdminCategoryPage";
+import AdminCategoryPagePdfs from "../Pages/AdminCategoryPdfPage";
+import TermsOfUsePage from "../Pages/TermsOfUse";
+import PrivacyPolicyPage from "../Pages/PrivacyPolicy";
+import CopyrightPage from "../Pages/Copyright";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +67,26 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <ProfilPage />,
+      },
+      {
+        path: "profile",
+        element: <ProfilPage />,
+      },
+      {
+        path: "term-of-use",
+        element: <TermsOfUsePage />,
+      },
+      {
+        path: "terms-of-use",
+        element: <TermsOfUsePage />,
+      },
+      {
+        path: "privacy-policy",
+        element: <PrivacyPolicyPage />,
+      },
+      {
+        path: "copyright",
+        element: <CopyrightPage />,
       },
     ],
   },
@@ -108,6 +133,14 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <AdminProfilePage />,
+      },
+      {
+        path: "categories/news",
+        element: <AdminCategoryPage />,
+      },
+      {
+        path: "categories/books",
+        element: <AdminCategoryPagePdfs />,
       },
     ],
   },

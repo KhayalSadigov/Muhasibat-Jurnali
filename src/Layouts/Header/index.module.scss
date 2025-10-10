@@ -10,6 +10,7 @@
   justify-content: center;
   align-items: center;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
   .container {
     height: 100%;
     width: 80%;
@@ -17,28 +18,34 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     .left {
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 10px;
+
       .logo {
         height: 40px;
       }
+
       .title {
         color: white;
         font-weight: 500;
+
         @media screen and (max-width: 430px) {
           display: none !important;
         }
       }
     }
+
     .right {
       height: 100%;
 
       @media screen and (max-width: 850px) {
         display: none !important;
       }
+
       ul {
         display: flex;
         align-items: center;
@@ -46,6 +53,7 @@
         list-style: none;
         color: white;
         font-size: 14px;
+
         li {
           padding: 0 10px;
           cursor: pointer;
@@ -55,31 +63,94 @@
           justify-content: center;
           align-items: center;
           transition: 0.2s;
+
           &:hover {
             background-color: #fff;
             color: #032062;
           }
         }
-        select {
-          outline: none;
-          cursor: pointer;
+
+        // Dropdown üçün ümumi stillər
+        .dropdown {
+          position: relative;
           height: 100%;
-          width: 85px;
-          background-color: #032062;
-          padding: 0 10px;
-          appearance: none;
-          border: none;
-          font-size: 14px;
+          // padding: 0 15px;
           color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition: 0.2s;
+          cursor: pointer;
+
           &:hover {
             background-color: #fff;
             color: #032062;
+
+            // Hover zamanı dropdown menu göstər
+            .dropdownMenu {
+              opacity: 1;
+              visibility: visible;
+              transform: translateY(0);
+              pointer-events: auto;
+            }
+
+            // Icon dönüşü
+            .dropdownIcon {
+              transform: rotate(180deg);
+            }
           }
-          //   option {
-          //     &:hover{
-          //       background-color: #fff;
-          //     }
-          //   }
+
+          .dropdownLabel {
+            display: flex;
+            align-items: center;
+            // gap: 3px;
+            font-size: 14px;
+          }
+
+          .dropdownIcon {
+            transition: transform 0.2s;
+          }
+
+          .dropdownMenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            pointer-events: none;
+
+            .dropdownItem {
+              padding: 12px 16px;
+              color: #032062;
+              cursor: pointer;
+              border-bottom: 1px solid #f0f0f0;
+              transition: all 0.2s;
+              font-size: 13px;
+
+              &:last-child {
+                border-bottom: none;
+                border-radius: 0 0 8px 8px;
+              }
+
+              &:first-child {
+                border-radius: 8px 8px 0 0;
+              }
+
+              &:hover {
+                background-color: #f8f9fa;
+                color: #2c3e50;
+                transform: translateX(3px);
+              }
+            }
+          }
         }
         .person {
           margin-left: 20px;

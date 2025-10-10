@@ -97,8 +97,27 @@ function Sidebar() {
             Kalkulyator
           </li>
           {/* <li></li> */}
+                      <li
+              className={styles.person}
+              onClick={() => {
+                if (store.user.data) {
+                  navigator("/profile");
+                } else {
+                  navigator("/login");
+                }
+              }}
+              style={
+                window.location.pathname == "/calculator"
+                  ? { color: "#032062", backgroundColor: "white" }
+                  : {}
+              }
+            >
+              Profil
+            </li>
         </ul>
+        
       </div>
+      
     </>
   );
 }

@@ -97,7 +97,7 @@ function ProfilPage() {
           className={styles.changePasswordButton}
           onClick={() => setShowPasswordForm(!showPasswordForm)}
         >
-          Şifrəni dəyiş
+          {showPasswordForm ? "Bağla" : "Şifrəni dəyiş"}
         </button>
 
         {showPasswordForm && (

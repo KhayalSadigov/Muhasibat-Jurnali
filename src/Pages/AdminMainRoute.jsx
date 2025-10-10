@@ -1,13 +1,35 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import AdminSidebar from "../Layouts/AdminSideBar";
 import AdminHeader from "../Layouts/AdminHeader";
 
 function AdminMainRoute() {
+  const navigate = useNavigate()
+  function handleCtrlL(event) {
+    if (event.ctrlKey && event.key === "e") {
+      event.preventDefault();
+      console.log("first")
+      navigate("/");
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleCtrlL);
+    return () => {
+      window.removeEventListener("keydown", handleCtrlL);
+    };
+  }, []);
   return (
     <div style={{ display: "flex" }}>
       <AdminSidebar />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", height: "100vh" }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          height: "100vh",
+        }}
+      >
         <AdminHeader />
         <div
           style={{

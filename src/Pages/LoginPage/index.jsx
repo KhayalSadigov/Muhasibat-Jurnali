@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom"; // 🔹 Navigate üçün əlavə
 const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loader,setLoader] = useState(false)
   const store = useContext(dataContext);
   const navigate = useNavigate(); // 🔹 Router istifadə olunur
 
@@ -48,10 +49,11 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoader(true)
     axios
       .post(Base_Url_Server + "auth/login", form)
       .then((response) => {
+        setLoader(false)
         if (response.data.data.user.role !== 1) {
           formReset();
           alert("Account not found");
@@ -67,6 +69,7 @@ const LoginPage = () => {
         }
       })
       .catch((error) => {
+        setLoader(false)
         if (error.response?.data?.message) {
           setError(error.response.data.message);
         } else {
@@ -101,7 +104,7 @@ const LoginPage = () => {
         {error && <div className={styles.error}>{error}</div>}
 
         <button type="submit" className={styles.button}>
-          Daxil ol
+          {loader ? "Yüklənir..." : "Daxil ol"}
         </button>
 
         {/* 🔹 Yeni hissə: Register səhifəsinə keçid düyməsi */}

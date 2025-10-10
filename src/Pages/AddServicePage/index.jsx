@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 function AddServicePage() {
   const store = useContext(dataContext);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   useEffect(() => {
     const tokenAdmin = localStorage.getItem("tokenAdmin");
     const adminID = localStorage.getItem("admin");
@@ -16,14 +19,11 @@ function AddServicePage() {
       navigate("/admin/login");
     } else {
       axios
-        .get(Base_Url_Server + "users/" + adminID, {
-          headers: {
-            Authorization: `Bearer ${tokenAdmin}`,
-          },
+        .get(`${Base_Url_Server}users/${adminID}`, {
+          headers: { Authorization: `Bearer ${tokenAdmin}` },
         })
         .then((response) => {
           store.admin.setData(response.data.data.user);
-          console.log(response.data.data.user);
         })
         .catch(() => {
           store.admin.setData(null);
@@ -32,28 +32,58 @@ function AddServicePage() {
           navigate("/admin/login");
         });
     }
-  }, []);
+  }, [navigate, store.admin]);
+
   const [formData, setFormData] = useState({
-    title: "",
-    content: "",
-    price: "",
+    name: "",
+    description: "",
+    price: 0,
+    currency: "AZN",
+    is_active: true,
   });
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newService = {
-      id: Date.now(),
-      ...formData,
-    };
-    console.log("Yeni servis:", newService);
-    // Burada API-ə göndərə bilərsən və ya state-də saxlayıb göstərmək olar
+    setLoading(true);
+    setMessage("");
+    const tokenAdmin = localStorage.getItem("tokenAdmin");
+
+    try {
+      const response = await axios.post(
+        `${Base_Url_Server}services`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenAdmin}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setMessage("✅ Servis uğurla əlavə olundu!");
+      setFormData({
+        name: "",
+        description: "",
+        price: 0,
+        currency: "AZN",
+        is_active: true,
+      });
+      navigate('/admin/services')
+    } catch (error) {
+
+      console.error(error);
+      setMessage("❌ Xəta baş verdi, bir daha yoxlayın!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,36 +95,55 @@ function AddServicePage() {
             <label>Başlıq</label>
             <input
               type="text"
-              name="title"
-              value={formData.title}
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               required
+              placeholder="Servisin adı..."
             />
           </div>
 
           <div className={styles.formGroup}>
             <label>Servis Haqqında</label>
             <textarea
-              name="content"
-              value={formData.content}
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               required
+              placeholder="Servis haqqında qısa məlumat..."
             />
           </div>
 
           <div className={styles.formGroup}>
             <label>Qiymət</label>
             <input
-              type="text"
+              type="number"
               name="price"
               value={formData.price}
               onChange={handleChange}
-              placeholder="Məs: 300 AZN"
               required
+              placeholder="Məs: 300"
             />
           </div>
 
-          <button type="submit">Əlavə Et</button>
+          <div className={styles.formGroup}>
+            <label>
+              Aktiv
+              <input
+                type="checkbox"
+                name="is_active"
+                checked={formData.is_active}
+                onChange={handleChange}
+                style={{ marginLeft: "10px" }}
+              />
+            </label>
+          </div>
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Yüklənir..." : "Əlavə Et"}
+          </button>
+
+          {message && <p className={styles.message}>{message}</p>}
         </form>
       </div>
     </div>

@@ -1,15 +1,23 @@
 .adminServices {
   padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50;
 
+  // Header
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
     background: #fff;
-    box-shadow: rgba(0, 0, 0, 0.082) 1.95px 1.95px 2.6px;
-    border-radius: 5px;
-    color: #2c3e50;
+    box-shadow: rgba(0, 0, 0, 0.08) 1.95px 1.95px 2.6px;
+    border-radius: 8px;
+
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
 
     .searchBox {
       display: flex;
@@ -17,84 +25,21 @@
       width: 40%;
 
       input {
-        padding: 0 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        height: 35px;
         width: 100%;
-        outline: none;.container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f5f6fa;
-}
-
-.form {
-  background: #fff;
-  padding: 2.5rem 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  width: 100%;
-  max-width: 350px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.title {
-  text-align: center;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 0.5rem;
-}
-
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-
-  label {
-    font-size: 1rem;
-    color: #555;
-    font-weight: 500;
-  }
-}
-
-.input {
-  padding: 0.7rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-
-  &:focus {
-    border-color: #0077ff;
-    outline: none;
-  }
-}
-
-.button {
-  padding: 0.8rem 0;
-  background: #0077ff;
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background: #005fcc;
-  }
-}
-
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        padding: 0 10px;
         font-size: 14px;
+        transition: border 0.2s ease;
+
+        &:focus {
+          border-color: #0077ff;
+          outline: none;
+        }
 
         &::placeholder {
-          color: #2c3e50;
+          color: #999;
         }
       }
     }
@@ -103,92 +48,190 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: none;
-      padding: 0px 10px;
-      height: 35px;
       gap: 5px;
-      border-radius: 5px;
       background-color: #2c3e50;
       color: #fff;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
       cursor: pointer;
+      transition: all 0.2s ease;
 
       &:hover {
-        opacity: 0.8;
+        background-color: #3d5060;
+        transform: translateY(-1px);
+      }
+
+      svg {
+        font-size: 18px;
       }
     }
   }
 
+  // Redaktə formu
+  .form {
+    background: #fff;
+    margin-top: 25px;
+    padding: 25px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-height: 200vh;
+    transition: .4s;
+    overflow: hidden;
+
+    h4 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .inputGroup {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      label {
+        font-weight: 500;
+        color: #555;
+        font-size: 15px;
+      }
+
+      input,
+      textarea,
+      select {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        font-size: 15px;
+        transition: border-color 0.2s ease;
+
+        &:focus {
+          border-color: #0077ff;
+          outline: none;
+        }
+      }
+
+      textarea {
+        resize: none;
+      }
+    }
+
+    .buttonsWrapper {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+
+      button {
+        border: none;
+        padding: 10px 16px;
+        font-size: 15px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:first-of-type {
+          background: #0077ff;
+          color: #fff;
+
+          &:hover {
+            background: #005fcc;
+          }
+        }
+
+        &.cancelBtn {
+          background: #e0e0e0;
+          color: #333;
+
+          &:hover {
+            background: #ccc;
+          }
+        }
+      }
+    }
+  }
+
+  // Servis Cədvəli
   .serviceList {
     margin-top: 20px;
     background: #fff;
-    box-shadow: rgba(0, 0, 0, 0.082) 1.95px 1.95px 2.6px;
-    border-radius: 5px;
-    color: #2c3e50;
+    box-shadow: rgba(0, 0, 0, 0.08) 1.95px 1.95px 2.6px;
+    border-radius: 8px;
+    overflow-x: auto;
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background: #fff;
+      border-radius: 8px;
       overflow: hidden;
-      border-radius: 10px;
 
       thead th {
-        text-align: center;
+        background: #f5f6fa;
         padding: 12px 16px;
         font-size: 14px;
-        letter-spacing: 0.02em;
+        font-weight: 600;
+        text-align: center;
+        color: #2c3e50;
         border-bottom: 2px solid rgba(0, 0, 0, 0.06);
-      }
-
-      .title {
-        max-width: 150px;
-      }
-
-      .content {
-        max-width: 250px;
       }
 
       tbody td {
         padding: 12px 16px;
+        text-align: center;
         font-size: 14px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-        vertical-align: middle;
-        text-align: center;
-        // display: flex;
+
+        &.title {
+          max-width: 160px;
+          font-weight: 500;
+        }
+
+        &.content {
+          max-width: 280px;
+          color: #555;
+        }
+
         button {
-          margin-right: 10px;
-          padding: 5px 10px;
+          margin-right: 8px;
+          padding: 6px 10px;
           border: none;
           border-radius: 5px;
           color: #fff;
           cursor: pointer;
+          transition: opacity 0.2s;
 
-          &:nth-of-type(1) {
-            background-color: #2c3e50; // Redaktə et
+          &:first-of-type {
+            background-color: #2c3e50;
           }
 
-          &:nth-of-type(2) {
-            background-color: #d32f2f; // Sil
+          &:last-of-type {
+            background-color: #d32f2f;
           }
 
           &:hover {
-            opacity: 0.8;
+            opacity: 0.85;
           }
-        }
 
-        a {
-          color: #2c3e50;
-          font-weight: 500;
-          text-decoration: none;
-
-          &:hover {
-            text-decoration: underline;
+          svg {
+            font-size: 18px;
           }
         }
       }
 
       tbody tr:nth-child(even) {
-        background: #fbfbff;
+        background: #fafbff;
+      }
+
+      tbody tr:hover {
+        background: #eef3ff;
+        transition: 0.2s;
       }
     }
   }

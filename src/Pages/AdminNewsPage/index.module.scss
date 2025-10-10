@@ -1,5 +1,6 @@
 .adminNews {
   padding: 20px;
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -9,6 +10,7 @@
     box-shadow: rgba(0, 0, 0, 0.082) 1.95px 1.95px 2.6px;
     border-radius: 5px;
     color: #2c3e50;
+
     .searchBox {
       display: flex;
       align-items: center;
@@ -16,7 +18,6 @@
       input {
         padding: 0 10px;
         border-radius: 5px;
-        border: none;
         border: 1px solid #ccc;
         height: 35px;
         width: 100%;
@@ -27,6 +28,7 @@
         }
       }
     }
+
     button {
       display: flex;
       align-items: center;
@@ -44,48 +46,104 @@
       }
     }
   }
+
+  /* Edit form */
+  .editForm {
+    margin-top: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+    border-radius: 12px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0 8px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .inputGroup {
+      display: flex;
+      flex-direction: column;
+      label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #1a202c;
+      }
+      input,
+      textarea {
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e0;
+        outline: none;
+        font-size: 14px;
+        &:focus {
+          border-color: #5a67d8;
+          box-shadow: 0 0 12px rgba(90, 103, 216, 0.25);
+        }
+      }
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+    }
+
+    .buttonsWrapper {
+      display: flex;
+      gap: 10px;
+
+      .button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s ease;
+        &:hover {
+          transform: translateY(-2px);
+        }
+      }
+
+      .button:first-of-type {
+        background: #0077ff;
+      }
+      .button:last-of-type {
+        background: #d32f2f;
+      }
+    }
+  }
+
   .newsList {
     margin-top: 20px;
     background: #fff;
     box-shadow: rgba(0, 0, 0, 0.082) 1.95px 1.95px 2.6px;
     border-radius: 5px;
-    // padding: 20px;
-    color: #2c3e50;
+
     table {
       width: 100%;
       border-collapse: collapse;
-      background: #fff;
-      overflow: hidden;
-      border-radius: 10px;
-      & thead th {
+
+      thead th {
         text-align: left;
         padding: 12px 16px;
         font-size: 14px;
-        letter-spacing: 0.02em;
         border-bottom: 2px solid rgba(0, 0, 0, 0.06);
-        // background: #fafafa;
       }
-      .title {
-        max-width: 150px;
-      }
-      .content {
-        max-width: 200px;
-      }
-      & tbody td {
+
+      tbody td {
         padding: 12px 16px;
         font-size: 14px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-        // display: flex;
-        // flex-direction: row;
-        flex-wrap: nowrap;
+
         &:nth-of-type(2) {
           width: 150px;
           img {
             width: 100%;
+            border-radius: 6px;
           }
         }
+
         button {
-          margin-right: 10px;
+          margin-right: 8px;
           padding: 5px 10px;
           border: none;
           border-radius: 5px;
@@ -103,15 +161,108 @@
         }
       }
 
-      & tbody tr:nth-child(even) {
+      tbody tr:nth-child(even) {
         background: #fbfbff;
       }
+    }
+  }
+}
+/* index.module.scss */
 
-      //   & tbody tr:hover {
-      //     transform: translateY(-1px);
-      //     box-shadow: 0 4px 14px rgba(59, 131, 246, 0.141);
-      //     transition: all 180ms ease;
-      //   }
+/* Edit form üçün wrapper */
+.editForm {
+  background: #fff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+
+  .inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+
+    label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    input,
+    textarea,
+    select {
+      padding: 10px 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+      &:focus {
+        border-color: #5a67d8;
+        box-shadow: 0 0 10px rgba(90, 103, 216, 0.2);
+      }
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    select {
+      appearance: none; /* default arrow silinir */
+      background: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M1%201L5%206L9%201%22%20stroke%3D%22%232c3e50%22%20stroke-width%3D%222%22/%3E%3C/svg%3E") no-repeat right 12px center;
+      background-color: #fff;
+      background-size: 10px 7px;
+      padding-right: 35px; /* arrow üçün boşluq */
+      cursor: pointer;
+    }
+  }
+
+  .buttonsWrapper {
+    display: flex;
+    gap: 12px;
+
+    .button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      color: #fff;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  .message {
+    margin-top: 12px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    background: #f0f4f8;
+    color: #1a202c;
+  }
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .editForm {
+    padding: 20px;
+
+    .inputGroup {
+      select {
+        padding-right: 30px;
+      }
     }
   }
 }

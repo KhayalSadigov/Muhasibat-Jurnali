@@ -7,16 +7,19 @@ import Base_Url_Server from "../../Constants/baseUrl";
 
 function AddBookPage() {
   const store = useContext(dataContext);
-  const navigate = useNavigate(); // Router istifadə olunur
-  
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
-    desc: "",
+    description: "", // ✅ Yeni sahə
+    language: "az",
     price: "",
-    cover: "",
-    demo: "",
+    categoryId: "",
+    file: null,
   });
 
+  const [categories, setCategories] = useState([]);
+
+  // input dəyişiklikləri
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,30 +27,51 @@ function AddBookPage() {
     });
   };
 
-  const handleImageChange = (e) => {
+  // fayl seçimi
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({
-          ...formData,
-          cover: reader.result, // şəkil base64 formatında
-        });
-      };
-      reader.readAsDataURL(file);
+    setFormData({
+      ...formData,
+      file,
+    });
+  };
+
+  // forma göndərilməsi
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(formData)
+    try {
+      const tokenAdmin = localStorage.getItem("tokenAdmin");
+      if (!tokenAdmin) {
+        alert("Token tapılmadı, yenidən daxil olun.");
+        return;
+      }
+
+      const data = new FormData();
+      data.append("title", formData.title);
+      data.append("description", formData.description); // ✅ Backend-ə göndərilir
+      data.append("language", formData.language);
+      data.append("price", formData.price);
+      data.append("categoryId", formData.categoryId);
+      data.append("file", formData.file);
+
+      const res = await axios.post("https://api.muhasibatjurnal.az/pdfs", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${tokenAdmin}`,
+        },
+      });
+
+      alert("Kitab uğurla əlavə olundu!");
+      console.log("Server response:", res.data);
+      navigate("/admin/library");
+    } catch (err) {
+      console.error("Xəta:", err);
+      alert("Əlavə etmə zamanı xəta baş verdi.");
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newBook = {
-      id: Date.now(),
-      ...formData,
-    };
-    console.log("Yeni kitab:", newBook);
-    // burda API-ə göndərə və ya state-ə əlavə edə bilərsən
-  };
-
+  // admin login yoxlanışı
   useEffect(() => {
     const tokenAdmin = localStorage.getItem("tokenAdmin");
     const adminID = localStorage.getItem("admin");
@@ -73,11 +97,22 @@ function AddBookPage() {
     }
   }, []);
 
+  // kateqoriyaları gətir
+  useEffect(() => {
+    axios
+      .get("https://api.muhasibatjurnal.az/categories/pdfs")
+      .then((res) => {
+        setCategories(res.data.data.categories);
+      })
+      .catch((err) => console.error("Kateqoriyalar alınmadı:", err));
+  }, []);
+
   return (
     <div className={styles.addBookPage}>
       <div className={styles.addBook}>
         <h2>Yeni Kitab Əlavə Et</h2>
         <form onSubmit={handleSubmit}>
+          {/* Başlıq */}
           <div className={styles.formGroup}>
             <label>Başlıq</label>
             <input
@@ -89,53 +124,69 @@ function AddBookPage() {
             />
           </div>
 
+          {/* Təsvir */}
           <div className={styles.formGroup}>
-            <label>Açıqlama</label>
+            <label>Təsvir</label>
             <textarea
-              name="desc"
-              value={formData.desc}
+              name="description"
+              value={formData.description}
               onChange={handleChange}
+              rows="4"
+              placeholder="Kitab haqqında qısa təsvir yazın..."
               required
-            />
+            ></textarea>
           </div>
 
+          {/* Dil */}
+          <div className={styles.formGroup}>
+            <label>Dil</label>
+            <select
+              name="language"
+              value={formData.language}
+              onChange={handleChange}
+            >
+              <option value="az">az</option>
+              <option value="en">en</option>
+              <option value="ru">ru</option>
+            </select>
+          </div>
+
+          {/* Qiymət */}
           <div className={styles.formGroup}>
             <label>Qiymət</label>
             <input
-              type="text"
+              type="number"
               name="price"
               value={formData.price}
               onChange={handleChange}
-              placeholder="Məs: $20"
+              placeholder="Məs: 20"
               required
             />
           </div>
 
+          {/* Kateqoriya */}
           <div className={styles.formGroup}>
-            <label>Şəkil Faylı</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              required
-            />
-            {formData.cover && (
-              <div className={styles.preview}>
-                <img src={formData.cover} alt="preview" />
-              </div>
-            )}
-          </div>
-
-          <div className={styles.formGroup}>
-            <label>Demo Link</label>
-            <input
-              type="url"
-              name="demo"
-              value={formData.demo}
+            <label>Kateqoriya</label>
+            <select
+              name="categoryId"
+              value={formData.categoryId}
               onChange={handleChange}
-              placeholder="https://example.com"
               required
-            />
+            >
+              <option value="">Kateqoriya seçin</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* PDF Faylı */}
+          <div className={styles.formGroup}>
+            <label>PDF Faylı</label>
+            <input type="file" onChange={handleFileChange} required />
+            {formData.file && <p>Seçilən fayl: {formData.file.name}</p>}
           </div>
 
           <button type="submit">Əlavə Et</button>

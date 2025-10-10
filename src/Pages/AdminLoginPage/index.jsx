@@ -4,11 +4,13 @@ import axios from "axios";
 import Base_Url_Server from "../../Constants/baseUrl";
 import dataContext from "../../Contexts/GlobalState";
 import { useNavigate } from "react-router-dom";
+import CircularProgress from '@mui/material/CircularProgress';
 // store importu əskik idi
 
 const AdminLoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const store = useContext(dataContext);
   const navigate = useNavigate(); // Router istifadə olunur
   // formReset funksiyası əskik idi
@@ -45,10 +47,11 @@ const AdminLoginPage = () => {
   }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("first");
+    setLoading(true);
     axios
       .post(Base_Url_Server + "auth/login/admin", form)
       .then((response) => {
+        setLoading(false);
         console.log(response.data.data.user.role);
         if (response.data.data.user.role == 1) {
           setError("Account not found");
@@ -64,6 +67,7 @@ const AdminLoginPage = () => {
         }
       })
       .catch((error) => {
+        setLoading(false);
         // clg funksiyası əskik idi, onu console.log ilə əvəz etdim
         console.log("error", error);
         if (
@@ -108,7 +112,9 @@ const AdminLoginPage = () => {
         {/* Error mesajı göstərilməsi əskik idi */}
         {error && <div className={styles.error}>{error}</div>}
         <button type="submit" className={styles.button}>
-          Daxil ol
+          {
+            loading ? <CircularProgress size={24} color="inherit" /> : "Daxil ol"
+          }
         </button>
       </form>
     </div>

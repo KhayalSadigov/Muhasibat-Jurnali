@@ -1,13 +1,31 @@
 import styles from "./index.module.scss";
 import logo from "../../Assets/logo.png";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import dataContext from "../../Contexts/GlobalState";
 import MenuIcon from "@mui/icons-material/Menu";
-import Person3Icon from "@mui/icons-material/Person3";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import PersonIcon from "@mui/icons-material/Person";
+
 function Header() {
   const navigator = useNavigate();
   const store = useContext(dataContext);
+
+  // Aktiv səhifə yoxlaması
+  const isActivePage = (paths) => {
+    const currentPath = window.location.pathname;
+    return paths.some((path) => currentPath.includes(path));
+  };
+
+  // Hüquqi səhifələr üçün yol yoxlaması
+  const isLegalPage = () => {
+    const path = window.location.pathname;
+    return (
+      path === "/terms-of-use" ||
+      path === "/privacy-policy" ||
+      path === "/copyright"
+    );
+  };
 
   return (
     <div className={styles.header}>
@@ -23,76 +41,133 @@ function Header() {
         </div>
         <div className={styles.right}>
           <ul>
+            {/* Ana səhifə */}
             <li
-              onClick={() => {
-                navigator("/");
-              }}
+              onClick={() => navigator("/")}
               style={
-                window.location.pathname == "/"
+                window.location.pathname === "/"
                   ? { color: "#032062", backgroundColor: "white" }
                   : {}
               }
             >
               Ana səhifə
             </li>
-            <select
-              onChange={(e) => {
-                const data = e.target.value;
-                e.target.value = "";
-                navigator(`/library/${data}`);
-              }}
+
+            {/* Kitabxana Dropdown */}
+ <li
+              className={styles.dropdown}
               style={
-                window.location.pathname == "/library"
+                isActivePage(["/library"])
                   ? { color: "#032062", backgroundColor: "white" }
                   : {}
               }
             >
-              <option value="" selected hidden>
+              <span className={styles.dropdownLabel}>
                 Kitabxana
-              </option>
-              <option value="qanun-vericilik">Qanun vericilik</option>
-              <option value="qanun-ve-vergi-jurnali">
-                Qanun və Vergi jurnalı
-              </option>
-              <option value="mecelleler">Məcəllələr</option>
-              <option value="muhasibat-kitablari">Mühasibat kitabları</option>
-              <option value="seminar-ve-kurslar">Seminar və kurslar</option>
-            </select>
+                {/* <ArrowDropDownIcon className={styles.dropdownIcon} /> */}
+              </span>
+              <div className={styles.dropdownMenu}>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={() => navigator("/library/qanun-vericilik")}
+                >
+                  Qanun vericilik
+                </div>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={() => navigator("/library/qanun-ve-vergi-jurnali")}
+                >
+                  Qanun və Vergi jurnalı
+                </div>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={() => navigator("/library/mecelleler")}
+                >
+                  Məcəllələr
+                </div>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={() => navigator("/library/muhasibat-kitablari")}
+                >
+                  Mühasibat kitabları
+                </div>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={() => navigator("/library/seminar-ve-kurslar")}
+                >
+                  Seminar və kurslar
+                </div>
+              </div>
+            </li>
+            {/* Servislər */}
             <li
-              onClick={() => {
-                navigator("/services");
-              }}
+              onClick={() => navigator("/services")}
               style={
-                window.location.pathname == "/services"
+                window.location.pathname === "/services"
                   ? { color: "#032062", backgroundColor: "white" }
                   : {}
               }
             >
               Servislər
             </li>
+
+            {/* Xəbərlər */}
             <li
-              onClick={() => {
-                navigator("/news");
-              }}
+              onClick={() => navigator("/news")}
               style={
-                window.location.pathname == "/news"
+                window.location.pathname === "/news"
                   ? { color: "#032062", backgroundColor: "white" }
                   : {}
               }
             >
               Xəbərlər
             </li>
+
+            {/* Kalkulyator */}
             <li
-              onClick={() => {
-                navigator("/calculator");
-              }}
+              onClick={() => navigator("/calculator")}
               style={
-                window.location.pathname == "/calculator"
+                window.location.pathname === "/calculator"
                   ? { color: "#032062", backgroundColor: "white" }
                   : {}
               }
             >
               Kalkulyator
+            </li>
+           
+            {/* Hüquqi Məlumatlar Dropdown */}
+            <li
+              className={styles.dropdown}
+              style={
+                isLegalPage()
+                  ? { color: "#032062", backgroundColor: "white" }
+                  : {}
+              }
+            >
+              <span className={styles.dropdownLabel}>
+                Hüquqi Məlumatlar
+                {/* <ArrowDropDownIcon className={styles.dropdownIcon} /> */}
+              </span>
+              <div className={styles.dropdownMenu}>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={() => navigator("/terms-of-use")}
+                >
+                  İstifadə Şərtləri
+                </div>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={() => navigator("/privacy-policy")}
+                >
+                  Məxfilik Siyasəti
+                </div>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={() => navigator("/copyright")}
+                >
+                  Müəllif Hüquqları
+                </div>
+              </div>
             </li>
             <li
               className={styles.person}
@@ -109,7 +184,7 @@ function Header() {
                   : {}
               }
             >
-              <Person3Icon />
+              <PersonIcon />
             </li>
           </ul>
         </div>
