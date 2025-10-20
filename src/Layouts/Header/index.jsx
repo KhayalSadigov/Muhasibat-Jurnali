@@ -1,16 +1,23 @@
 import styles from "./index.module.scss";
 import logo from "../../Assets/logo.png";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dataContext from "../../Contexts/GlobalState";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import PersonIcon from "@mui/icons-material/Person";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
 
 function Header() {
   const navigator = useNavigate();
   const store = useContext(dataContext);
-
+  const [categories, setCategories] = useState(null);
+  useEffect(() => {
+    axios.get(Base_Url_Server + "categories/pdfs").then((res) => {
+      setCategories(res.data.data.categories);
+    });
+  }, []);
   // Aktiv səhifə yoxlaması
   const isActivePage = (paths) => {
     const currentPath = window.location.pathname;
@@ -54,50 +61,15 @@ function Header() {
             </li>
 
             {/* Kitabxana Dropdown */}
- <li
-              className={styles.dropdown}
+            <li
+              onClick={() => navigator("/library")}
               style={
-                isActivePage(["/library"])
+                window.location.pathname === "/library"
                   ? { color: "#032062", backgroundColor: "white" }
                   : {}
               }
             >
-              <span className={styles.dropdownLabel}>
-                Kitabxana
-                {/* <ArrowDropDownIcon className={styles.dropdownIcon} /> */}
-              </span>
-              <div className={styles.dropdownMenu}>
-                <div
-                  className={styles.dropdownItem}
-                  onClick={() => navigator("/library/qanun-vericilik")}
-                >
-                  Qanun vericilik
-                </div>
-                <div
-                  className={styles.dropdownItem}
-                  onClick={() => navigator("/library/qanun-ve-vergi-jurnali")}
-                >
-                  Qanun və Vergi jurnalı
-                </div>
-                <div
-                  className={styles.dropdownItem}
-                  onClick={() => navigator("/library/mecelleler")}
-                >
-                  Məcəllələr
-                </div>
-                <div
-                  className={styles.dropdownItem}
-                  onClick={() => navigator("/library/muhasibat-kitablari")}
-                >
-                  Mühasibat kitabları
-                </div>
-                <div
-                  className={styles.dropdownItem}
-                  onClick={() => navigator("/library/seminar-ve-kurslar")}
-                >
-                  Seminar və kurslar
-                </div>
-              </div>
+              Kitabxana
             </li>
             {/* Servislər */}
             <li
@@ -134,7 +106,7 @@ function Header() {
             >
               Kalkulyator
             </li>
-           
+
             {/* Hüquqi Məlumatlar Dropdown */}
             <li
               className={styles.dropdown}

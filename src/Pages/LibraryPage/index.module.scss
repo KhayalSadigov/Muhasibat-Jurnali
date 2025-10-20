@@ -2,6 +2,76 @@
   padding: 60px 0;
   width: 100vw;
   min-height: 100vh;
+  .modal {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // padding-top: 60px;
+    .glass{
+      background-color: rgba(0, 0, 0, 0.309);
+      width: 100vw;
+      height: 100vh;
+    }
+    .content {
+      position: absolute;
+      height: 70%;
+      min-width: 300px;
+      max-width: 600px;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: #fff;
+margin-top: 60px;
+      text-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .body {
+        .head {
+          border-bottom: 1px solid #032062;
+          padding-bottom: 10px;
+          p {
+            font-size: 18px;
+            font-weight: 600;
+            color: #032062;
+            padding-bottom: 5px;
+          }
+          .info {
+            display: flex;
+            justify-content: space-between;
+            span {
+              font-size: 12px;
+            }
+          }
+        }
+        .text {
+          padding: 10px 0;
+        }
+      }
+      .footer {
+        display: flex;
+        gap: 10px;
+        button {
+          width: 50%;
+          background-color: #032062;
+          color: white;
+          padding: 10px;
+          border-radius: 10px;
+          outline: none;
+          border: none;
+          cursor: pointer;
+          transition: .3s;
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+  }
   .bgImage {
     height: 250px;
     display: flex;
@@ -29,6 +99,7 @@
       }
     }
   }
+
   .bookList {
     .header {
       width: 100%;
@@ -46,6 +117,101 @@
         font-size: 50px;
       }
     }
+    .filter {
+      width: 80%;
+      margin: 0 auto;
+      margin-bottom: 30px;
+      padding: 0 10px;
+      .content {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+        border-radius: 10px;
+        width: 100%;
+        background-color: #fff;
+        padding: 10px;
+        gap: 10px;
+        overflow: hidden;
+        position: relative;
+        transition: 0.2s;
+        .iconFilter {
+          position: absolute;
+          right: 30px;
+          top: 30px;
+          transform: translateY(-50%);
+          font-size: 30px;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.6;
+          }
+        }
+        .head {
+          height: 40px;
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          div {
+            width: 50%;
+            position: relative;
+            input {
+              width: 100%;
+              padding: 10px;
+              border-radius: 10px;
+              border: 1px solid #032062;
+            }
+            button {
+              background-color: #fff;
+              border: none;
+              outline: none;
+              position: absolute;
+              top: 50%;
+              transform: translateY(-50%);
+              right: 10px;
+              height: calc(100% - 6px);
+              cursor: pointer;
+            }
+          }
+        }
+        .dropDown {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+          padding: 20px;
+          input,
+          select {
+            padding: 5px 10px;
+            border-radius: 10px;
+            border: 1px solid #032062;
+          }
+          .date {
+            display: flex;
+            // flex-wrap: nowrap;
+            border: 1px solid #032062;
+            border-radius: 10px;
+            align-items: center;
+            padding: 0 10px;
+            justify-content: space-between;
+            width: 100%;
+
+            label {
+              text-wrap: nowrap;
+              font-size: 12px;
+            }
+            input {
+              border: none;
+              outline: none;
+            }
+          }
+          button {
+            background-color: #032062;
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            padding: 5px 10px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
     .container {
       width: 80%;
       margin: 0 auto;
@@ -54,7 +220,7 @@
       // gap: 20px;
       justify-content: center;
       .card {
-        width: calc(100% / 4);
+        width: calc(100% / 3);
         padding: 10px;
         margin-bottom: 20px;
         @media screen and (max-width: 900px) {
@@ -62,83 +228,112 @@
         }
         @media screen and (max-width: 750px) {
           width: calc(100% / 2);
+          span {
+            font-size: 12px;
+          }
+          .cardInfo {
+            flex-direction: column;
+          }
         }
         @media screen and (max-width: 500px) {
           width: 100%;
         }
         .cardContent {
           width: 100%;
-          aspect-ratio: 3/4;
           border-radius: 10px;
-          position: relative;
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
-          }
-          .glass {
+          background-color: #fff;
+          box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+          height: 250px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          .cardHeader {
+            height: 80px;
             padding: 10px;
-
             display: flex;
             flex-direction: column;
+            gap: 15px;
+            h2 {
+              font-size: 18px;
+              text-align: start;
+              border-bottom: 1px solid #032062;
+              padding: 0px 10px 10px 10px;
+              display: flex;
+              justify-content: space-between;
+            }
+            h5 {
+              padding: 0px 15px 10px 15px;
+            }
+          }
+          .cardInfo {
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+          }
+          .cardButtons {
+            height: 60px;
+            display: flex;
             justify-content: center;
             align-items: center;
-            transition: 0.2s;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 99%;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.633);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            gap: 10px;
-            button {
-            //   visibility: hidden;
-              transition: 0.1s;
-              width: 80%;
-              background-color: #ffffff00;
-              color: rgba(255, 255, 255, 0);
-              border: none;
-              padding: 10px;
-              border-radius: 5px;
-              cursor: pointer;
-            }
-            h3 {
-              bottom: 50%;
-              left: 50%;
-              transform: translate(-50%, 50%);
+            padding: 10px;
+            span {
+              background-color: #032062;
               color: white;
-              position: absolute;
-              transition: 0.1s;
-            }
-            &:hover {
-              //   cursor: pointer;
-              //   background: rgba(0, 0, 0, 0);
-              button {
-                &:nth-of-type(1) {
-                  background-color: #032062;
-                  color: #fff;
-                  &:hover {
-                    background-color: #001139;
-                  }
-                }
-                &:nth-of-type(2) {
-                  background-color: #ffde20;
-                  color: #fff;
-                  &:hover {
-                    background-color: #eac700;
-                  }
-                }
+              padding: 5px 10px;
+              border-radius: 10px;
+              width: 100%;
+              cursor: pointer;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              transition: 0.2s;
+              b {
+                text-wrap: nowrap;
               }
-              h3 {
-                color: #03206200;
+              &:hover {
+                opacity: 0.7;
               }
             }
           }
         }
+      }
+    }
+    .loader {
+      margin: 0 auto;
+      width: 80%;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+    }
+    .pagination {
+      width: 80%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .paginationCount,
+      .paginationCountArrow,
+      .paginationCountDot {
+        height: 30px;
+        width: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #032062;
+        border: 1px solid #032062;
+      }
+      .paginationCountArrow,
+      .paginationCount {
+        cursor: pointer;
+        transition: 0.2s;
+        &:hover {
+          background-color: #032062;
+          color: white;
+        }
+      }
+      .paginationCountDot {
+        cursor: default;
       }
     }
   }

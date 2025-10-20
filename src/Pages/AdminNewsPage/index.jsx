@@ -250,7 +250,7 @@ function AdminNewsPage() {
                 Base_Url_Server +
                 news
                   .find((n) => n.id === editId)
-                  ?.image.split("/home/muhasibatjurnal/backend-mmu/")[1]
+                  ?.image?.split("/home/muhasibatjurnal/backend-mmu/")[1]
               }
               alt="current"
               style={{

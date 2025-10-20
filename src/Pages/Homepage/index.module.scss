@@ -1,3 +1,6 @@
+main {
+  padding-bottom: 60px;
+}
 .hero {
   height: 100vh;
   width: 100vw;
@@ -46,9 +49,8 @@
             text-align: center;
             width: 350px !important;
             line-height: 35px !important;
-            font-size: 30px !important;
+            font-size: 25px !important;
           }
-
         }
         .btns {
           ul {
@@ -63,15 +65,13 @@
               border-radius: 20px;
               cursor: pointer;
               transition: 0.2s;
-               @media screen and (max-width: 900px) {
-                
+              @media screen and (max-width: 900px) {
                 font-size: 18px !important;
               }
               @media screen and (max-width: 600px) {
-                
-                font-size: 14px ;
+                font-size: 14px;
               }
-             
+
               &:hover {
                 background-color: #fff;
                 color: #032062;
@@ -88,22 +88,263 @@
     }
   }
 }
-.footer {
-  position: fixed;
-  height: 30px;
-  width: 100vw;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  bottom: 10px;
-  color: white;
-  z-index: 3;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 3px;
-  text-decoration: none;
-  // color: #032062;
+.section {
+  padding-top: 40px;
+  padding-bottom: 20px;
+
+  .header {
+
+    text-align: center;
+    padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-wrap: nowrap;
+
+    h2{
+      color: #fff;
+      padding: 5px 20px;
+      background-color: #eac700;
+      border-radius: 10px;
+      // margin-bottom: 30px;
+    }
+    .hr {
+      height: 1px;
+      width: 100%;
+      border: 10px solid #eac700;
+    }
+  }
+  .container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 50px;
+  }
+  .footer {
+    text-align: center;
+    padding-top: 20px;
+    span {
+      cursor: pointer;
+      transition: 0.2s;
+      color: grey;
+      &:hover {
+        color: black;
+      }
+    }
+  }
+}
+.services {
+  .card {
+    width: calc(100% / 3);
+    @media screen and (max-width: 900px) {
+      width: calc(100% / 2);
+    }
+    @media screen and (max-width: 750px) {
+      width: calc(100% / 2);
+    }
+    @media screen and (max-width: 400px) {
+      width: calc(100% / 1);
+    }
+    height: 225px;
+    padding: 10px;
+    .cardContent {
+      cursor: pointer;
+      transition: 0.2s;
+      &:hover {
+        transform: scale(0.95);
+      }
+      padding: 25px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      align-items: center;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+      .title {
+        text-align: center;
+        color: #032062;
+      }
+      .icons {
+        // border: 1px solid red;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        .hr {
+          width: 100px;
+          height: 1px;
+          gap: 10px;
+          border: 1px solid #032062;
+        }
+      }
+    }
+  }
+}
+.library {
+  .card {
+    width: calc(100% / 4);
+    padding: 10px;
+    margin-bottom: 20px;
+    @media screen and (max-width: 900px) {
+      width: calc(100% / 3);
+    }
+    @media screen and (max-width: 750px) {
+      width: calc(100% / 2);
+    }
+    @media screen and (max-width: 500px) {
+      width: 100%;
+    }
+    .cardContent {
+      width: 100%;
+      aspect-ratio: 3/4;
+      border-radius: 10px;
+      position: relative;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      .glass {
+        padding: 10px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.2s;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 99%;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.633);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        gap: 10px;
+        button {
+          //   visibility: hidden;
+          transition: 0.1s;
+          width: 80%;
+          background-color: #ffffff00;
+          color: rgba(255, 255, 255, 0);
+          border: none;
+          padding: 10px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        h3 {
+          bottom: 50%;
+          left: 50%;
+          transform: translate(-50%, 50%);
+          color: white;
+          position: absolute;
+          transition: 0.1s;
+        }
+        &:hover {
+          //   cursor: pointer;
+          //   background: rgba(0, 0, 0, 0);
+          button {
+            &:nth-of-type(1) {
+              background-color: #032062;
+              color: #fff;
+              &:hover {
+                background-color: #001139;
+              }
+            }
+            &:nth-of-type(2) {
+              background-color: #ffde20;
+              color: #fff;
+              &:hover {
+                background-color: #eac700;
+              }
+            }
+          }
+          h3 {
+            color: #03206200;
+          }
+        }
+      }
+    }
+  }
+}
+
+.news {
+  .card {
+    width: calc(100% / 4);
+    @media screen and (max-width: 900px) {
+      width: calc(100% / 3);
+    }
+    @media screen and (max-width: 750px) {
+      width: calc(100% / 2);
+    }
+    @media screen and (max-width: 400px) {
+      width: calc(100% / 1);
+    }
+    padding: 10px;
+    .cardContent {
+      cursor: pointer;
+      transition: 0.2s;
+      &:hover {
+        transform: scale(0.98);
+      }
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+      .cardImage {
+        width: 100%;
+        aspect-ratio: 3 / 2;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .cardText {
+        width: 100%;
+        height: 100px;
+        padding: 10px 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 3px;
+
+        .title {
+          font-size: 13px;
+          line-height: 1.4;
+          white-space: normal; // ✅ mətnin sətirə keçməsinə icazə verir
+          word-wrap: break-word; // ✅ uzun sözləri qırır
+          overflow-wrap: break-word; // ✅ əlavə et
+          display: block; // ✅ flex olmamalıdır!
+          height: 80%;
+          overflow: hidden;
+        }
+
+        p:last-of-type {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 12px;
+
+          span:nth-of-type(2) {
+            color: white;
+            padding: 3px 15px;
+            background-color: #1976d2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+          }
+        }
+      }
+    }
+  }
 }

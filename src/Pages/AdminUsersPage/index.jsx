@@ -205,7 +205,7 @@ function AdminUsersPage() {
                     ? "yoxdur"
                     : user.subscriptions[0].plan}
                 </td>
-                <td>{user.createdAt.split("T")[0]}</td>
+                <td>{user.createdAt?.split("T")[0]}</td>
                 <td>{user.isVerified ? "bəli" : "xeyr"}</td>
                 <td>{user.eduEmail ? "bəli" : "xeyr"}</td>
                 <td>

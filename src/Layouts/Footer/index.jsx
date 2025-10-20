@@ -94,7 +94,7 @@ function Footer() {
         href="https://www.instagram.com/reverdigitallab.az?igsh=MTFvamdoOXN1dWxvZg=="
         target="_blank"
         className={styles.footerEnd}
-        style={path == "/" ? { display: "none" } : {}}
+        // style={path == "/" ? { display: "none" } : {}}
       >
         Developed by Rever Digital Lab
       </a>

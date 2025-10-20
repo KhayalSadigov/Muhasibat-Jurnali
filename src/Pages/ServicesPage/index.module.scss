@@ -45,6 +45,27 @@
         font-size: 50px;
       }
     }
+    .filter {
+      width: calc(80% - 20px);
+      margin: 0 auto;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      input{
+        padding: 10px;
+        border-radius: 8px;
+        width: 50%;
+      }
+      select{
+        padding: 5px;
+        border-radius: 8px;
+        width: 20%;
+      }
+    }
     .container {
       width: 80%;
       margin: 0 auto;
@@ -65,7 +86,7 @@
         padding: 10px;
         .cardContent {
           cursor: pointer;
-          transition: .2s;
+          transition: 0.2s;
           &:hover {
             transform: scale(0.95);
           }

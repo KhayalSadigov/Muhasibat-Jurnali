@@ -66,6 +66,7 @@ function AddBookPage() {
       console.log("Server response:", res.data);
       navigate("/admin/library");
     } catch (err) {
+      console.log(err)
       console.error("Xəta:", err);
       alert("Əlavə etmə zamanı xəta baş verdi.");
     }

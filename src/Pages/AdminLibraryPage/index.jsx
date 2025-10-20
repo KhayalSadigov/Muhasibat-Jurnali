@@ -234,7 +234,11 @@ function AdminLibraryPage() {
               <tr key={book.id}>
                 <td>{i + 1}</td>
                 <td className={styles.title}>{book.title}</td>
-                <td className={styles.title}>{book.description}</td>
+                <td className={styles.title}>
+                  {book.description?.length <= 100
+                    ? book.description
+                    : book.description?.slice(0, 100) + "..."}
+                </td>
                 <td>{book.language}</td>
                 <td>{book.price}</td>
                 <td>{book.category.name}</td>
@@ -242,7 +246,7 @@ function AdminLibraryPage() {
                   <a
                     href={
                       Base_Url_Server +
-                      book.file_path.split(
+                      book.file_path?.split(
                         "/home/muhasibatjurnal/backend-mmu/"
                       )[1]
                     }

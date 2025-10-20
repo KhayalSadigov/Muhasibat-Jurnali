@@ -41,7 +41,7 @@ const router = createBrowserRouter([
         element: <NewsPage />,
       },
       {
-        path: "library/:category",
+        path: "library",
         element: <LibraryPage />,
       },
       {

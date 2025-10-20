@@ -33,12 +33,10 @@ function Sidebar() {
           >
             Ana səhifə
           </li>
-          <select
-            onChange={(e) => {
-              const data = e.target.value;
-              e.target.value = "";
+          <li
+            onClick={() => {
+              navigator("/library");
               store.sidebar.setData(!store.sidebar.data);
-              navigator(`/library/${data}`);
             }}
             style={
               window.location.pathname == "/library"
@@ -46,17 +44,9 @@ function Sidebar() {
                 : {}
             }
           >
-            <option value=""  selected hidden>
-              Kitabxana
-            </option>
-            <option value="qanun-vericilik">Qanun vericilik</option>
-            <option value="qanun-ve-vergi-jurnali">
-              Qanun və Vergi jurnalı
-            </option>
-            <option value="mecelleler">Məcəllələr</option>
-            <option value="muhasibat-kitablari">Mühasibat kitabları</option>
-            <option value="seminar-ve-kurslar">Seminar və kurslar</option>
-          </select>
+            Kitabxana
+          </li>
+
           <li
             onClick={() => {
               navigator("/services");
@@ -97,27 +87,42 @@ function Sidebar() {
             Kalkulyator
           </li>
           {/* <li></li> */}
-                      <li
-              className={styles.person}
-              onClick={() => {
-                if (store.user.data) {
-                  navigator("/profile");
-                } else {
-                  navigator("/login");
-                }
-              }}
-              style={
-                window.location.pathname == "/calculator"
-                  ? { color: "#032062", backgroundColor: "white" }
-                  : {}
+
+          <select
+            onChange={(e) => {
+              e.preventDefault();
+              store.sidebar.setData(!store.sidebar.data);
+              navigator(`${e.target.value}`);
+              e.target.value = "";
+            }}
+          >
+            <option value="" selected hidden>
+              Hüquqi məlumatlar
+            </option>
+            <option value="/term-of-use">İstifadə şərtləri</option>
+            <option value="/privacy-policy">Məxfilik siyasəti</option>
+            <option value="/copyright">Müəllif hüquqları</option>
+          </select>
+                    <li
+            className={styles.person}
+            onClick={() => {
+              if (store.user.data) {
+                navigator("/profile");
+              } else {
+                navigator("/login");
               }
-            >
-              Profil
-            </li>
+              store.sidebar.setData(!store.sidebar.data);
+            }}
+            style={
+              window.location.pathname == "/calculator"
+                ? { color: "#032062", backgroundColor: "white" }
+                : {}
+            }
+          >
+            Profil
+          </li>
         </ul>
-        
       </div>
-      
     </>
   );
 }

@@ -118,13 +118,12 @@
 
 .footerEnd {
   height: 50px;
-  background-color: #032062;
+  background-color: #032062 !important;
   width: 100vw;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 14px;
-
   text-decoration: none;
 }

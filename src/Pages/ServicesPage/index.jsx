@@ -3,15 +3,14 @@ import styles from "./index.module.scss";
 import bg from "./../../Assets/heroImage.jpg";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
-import serviceData from "../../Data/serviceData";
 import dataContext from "../../Contexts/GlobalState";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Base_Url_Server from "../../Constants/baseUrl";
 
 function ServicesPage() {
   const store = useContext(dataContext);
-
+  const [services, setServices] = useState(null);
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userID = localStorage.getItem("user");
@@ -35,6 +34,13 @@ function ServicesPage() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    axios.get(Base_Url_Server + "services").then((res) => {
+      setServices(res.data.data.services);
+      console.log(first);
+    });
+  }, []);
   return (
     <>
       <section></section>
@@ -51,9 +57,13 @@ function ServicesPage() {
             <MiscellaneousServicesIcon className={styles.icon} />
             <div></div>
           </div>
+          <div className={styles.filter}>
+            <input type="text" placeholder="Axtar" />
+
+          </div>
           <div className={styles.container}>
-            {serviceData &&
-              serviceData?.map((e) => {
+            {services ? services &&
+              services?.map((e) => {
                 return (
                   <div key={e.id} className={styles.card}>
                     <div className={styles.cardContent}>
@@ -62,12 +72,14 @@ function ServicesPage() {
                         <BookmarksIcon />
                         <div className={styles.hr}></div>
                       </div>
-                      <div className={styles.title}>{e.title}</div>
+                      <div className={styles.title}>{e.name}</div>
                       <div className={styles.price}>{e.price}</div>
                     </div>
                   </div>
                 );
-              })}
+              }) : (
+                  <div>Yüklənir</div>
+              )}
           </div>
         </div>
       </section>
