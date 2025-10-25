@@ -18,12 +18,10 @@ import {
 function AdminHomePage() {
   const store = useContext(dataContext);
   const navigate = useNavigate();
-  const [loader, setLoader] = useState(true);
   const [dashboard, setDashboard] = useState(null);
 
   const tokenAdmin = localStorage.getItem("tokenAdmin");
   const adminID = localStorage.getItem("admin");
-  console.log(dashboard);
   const calcMonthlyRevenue = () => {
     let total = 0;
     dashboard?.monthlyRevenue?.forEach((e) => {
@@ -53,6 +51,7 @@ function AdminHomePage() {
   }, [tokenAdmin, adminID]);
 
   useEffect(() => {
+    store.loader.setData(true);
     const fetchData = async () => {
       try {
         const [dashboardRes] = await Promise.all([
@@ -64,7 +63,7 @@ function AdminHomePage() {
       } catch (err) {
         console.log("Dashboard yüklənmədi:", err);
       } finally {
-        setLoader(false);
+        store.loader.setData(false);
       }
     };
     fetchData();
@@ -78,7 +77,6 @@ function AdminHomePage() {
     height: 400,
     margin: { left: 0 },
   };
-  if (loader) return <CircularProgress className={styles.loader} />;
 
   return (
     <div className={styles.container}>

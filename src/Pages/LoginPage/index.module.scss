@@ -40,7 +40,27 @@
     border-color: #032062;
   }
 }
-
+.inputGroup {
+  position: relative;
+  input {
+    width: 100%;
+  }
+  .eyeIcon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+    transition: 0.2s;
+    // &:hover {
+    //   color: #032062;
+    // }
+  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .button {
   background: #032062;
   color: #fff;

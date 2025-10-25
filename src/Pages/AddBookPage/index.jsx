@@ -4,22 +4,23 @@ import dataContext from "../../Contexts/GlobalState";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Base_Url_Server from "../../Constants/baseUrl";
+import Swal from "sweetalert2";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function AddBookPage() {
   const store = useContext(dataContext);
   const navigate = useNavigate();
+  const [loader, setLoader] = useState(false); // 🔹 Loader state
   const [formData, setFormData] = useState({
     title: "",
-    description: "", // ✅ Yeni sahə
+    description: "",
     language: "az",
     price: "",
     categoryId: "",
     file: null,
   });
-
   const [categories, setCategories] = useState([]);
 
-  // input dəyişiklikləri
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -27,7 +28,6 @@ function AddBookPage() {
     });
   };
 
-  // fayl seçimi
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setFormData({
@@ -36,43 +36,93 @@ function AddBookPage() {
     });
   };
 
-  // forma göndərilməsi
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData)
+    setLoader(true); // 🔹 Göndərilməyə başlayanda loader true olur
+
     try {
       const tokenAdmin = localStorage.getItem("tokenAdmin");
       if (!tokenAdmin) {
-        alert("Token tapılmadı, yenidən daxil olun.");
+        setLoader(false);
+        Swal.fire({
+          icon: "warning",
+          title: "Token tapılmadı",
+          text: "Zəhmət olmasa yenidən daxil olun.",
+          confirmButtonColor: "#3085d6",
+        });
+        return;
+      }
+
+      if (
+        !formData.title ||
+        !formData.description ||
+        !formData.language ||
+        !formData.price ||
+        !formData.categoryId ||
+        !formData.file
+      ) {
+        setLoader(false);
+        Swal.fire({
+          icon: "warning",
+          title: "Diqqət!",
+          text: "Zəhmət olmasa bütün sahələri doldurun.",
+          confirmButtonColor: "#3085d6",
+        });
         return;
       }
 
       const data = new FormData();
       data.append("title", formData.title);
-      data.append("description", formData.description); // ✅ Backend-ə göndərilir
+      data.append("description", formData.description);
       data.append("language", formData.language);
       data.append("price", formData.price);
       data.append("categoryId", formData.categoryId);
       data.append("file", formData.file);
 
-      const res = await axios.post("https://api.muhasibatjurnal.az/pdfs", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${tokenAdmin}`,
-        },
+      const res = await axios.post(
+        "https://api.muhasibatjurnal.az/pdfs",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${tokenAdmin}`,
+          },
+        }
+      );
+
+      setLoader(false); // 🔹 Uğurla göndərildikdə loader false olur
+      Swal.fire({
+        icon: "success",
+        title: "Uğurlu!",
+        text: "Kitab uğurla əlavə olundu.",
+        showConfirmButton: false,
+        timer: 1500,
       });
 
-      alert("Kitab uğurla əlavə olundu!");
-      console.log("Server response:", res.data);
-      navigate("/admin/library");
+      setFormData({
+        title: "",
+        description: "",
+        language: "az",
+        price: "",
+        categoryId: "",
+        file: null,
+      });
+
+      setTimeout(() => navigate("/admin/library"), 1500);
     } catch (err) {
-      console.log(err)
+      setLoader(false); // 🔹 Xəta olduqda da loader false
       console.error("Xəta:", err);
-      alert("Əlavə etmə zamanı xəta baş verdi.");
+      Swal.fire({
+        icon: "error",
+        title: "Xəta!",
+        text:
+          err.response?.data?.message ||
+          "Əlavə etmə zamanı xəta baş verdi.",
+        confirmButtonColor: "#d33",
+      });
     }
   };
 
-  // admin login yoxlanışı
   useEffect(() => {
     const tokenAdmin = localStorage.getItem("tokenAdmin");
     const adminID = localStorage.getItem("admin");
@@ -82,13 +132,9 @@ function AddBookPage() {
     } else {
       axios
         .get(Base_Url_Server + "users/" + adminID, {
-          headers: {
-            Authorization: `Bearer ${tokenAdmin}`,
-          },
+          headers: { Authorization: `Bearer ${tokenAdmin}` },
         })
-        .then((response) => {
-          store.admin.setData(response.data.data.user);
-        })
+        .then((response) => store.admin.setData(response.data.data.user))
         .catch(() => {
           navigate("/admin/login");
           store.admin.setData(null);
@@ -98,13 +144,10 @@ function AddBookPage() {
     }
   }, []);
 
-  // kateqoriyaları gətir
   useEffect(() => {
     axios
       .get("https://api.muhasibatjurnal.az/categories/pdfs")
-      .then((res) => {
-        setCategories(res.data.data.categories);
-      })
+      .then((res) => setCategories(res.data.data.categories))
       .catch((err) => console.error("Kateqoriyalar alınmadı:", err));
   }, []);
 
@@ -147,7 +190,6 @@ function AddBookPage() {
               onChange={handleChange}
             >
               <option value="az">az</option>
-              <option value="en">en</option>
               <option value="ru">ru</option>
             </select>
           </div>
@@ -190,7 +232,14 @@ function AddBookPage() {
             {formData.file && <p>Seçilən fayl: {formData.file.name}</p>}
           </div>
 
-          <button type="submit">Əlavə Et</button>
+          {/* 🔹 Submit düyməsi */}
+          <button type="submit" disabled={loader}>
+            {loader ? (
+              <CircularProgress size={24} style={{ color: "#fff" }} />
+            ) : (
+              "Əlavə Et"
+            )}
+          </button>
         </form>
       </div>
     </div>

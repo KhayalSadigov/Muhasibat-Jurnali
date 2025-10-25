@@ -14,8 +14,7 @@ function AdminNewsPage() {
   const store = useContext(dataContext);
   const navigate = useNavigate();
   const [news, setNews] = useState([]);
-  const [filteredNews, setFilteredNews] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState([]);
   const [editId, setEditId] = useState(null);
   const [formDataEdit, setFormDataEdit] = useState({
@@ -27,6 +26,9 @@ function AdminNewsPage() {
   });
   const [loader, setLoader] = useState(false);
 
+  // Pagination states
+  const [pageCount, setPageCount] = useState(1);
+  const [page, setPage] = useState(1);
   // Admin yoxlaması
   useEffect(() => {
     const tokenAdmin = localStorage.getItem("tokenAdmin");
@@ -52,17 +54,24 @@ function AdminNewsPage() {
   // Fetch data
   useEffect(() => {
     fetchNews();
+  }, [searchTerm, page]);
+
+  useEffect(() => {
     fetchCategories();
   }, []);
 
   const fetchNews = async () => {
+    store.loader.setData(true);
     try {
-      const res = await axios.get(`${Base_Url_Server}news`);
-      const data = res.data.data.news;
-      setNews(data);
-      setFilteredNews(data);
+      const res = await axios.get(
+        `${Base_Url_Server}news?search=${searchTerm}&page=${page}`
+      );
+      setNews(res.data.data.news);
+      setPageCount(res.data.data.pagination.total_pages);
     } catch (err) {
-      console.log("Xəbərlər yüklənmədi:", err);
+      console.error(err);
+    } finally {
+      store.loader.setData(false);
     }
   };
 
@@ -71,23 +80,13 @@ function AdminNewsPage() {
       const res = await axios.get(`${Base_Url_Server}categories`);
       setCategories(res.data.data.categories);
     } catch (err) {
-      console.log("Kateqoriyalar yüklənmədi:", err);
+      console.error(err);
     }
   };
 
-  // Axtarış funksiyası
-  const handleSearch = (value) => {
-    setSearchValue(value);
-    const filtered = news.filter(
-      (item) =>
-        item.title.toLowerCase().includes(value.toLowerCase()) ||
-        item.content.toLowerCase().includes(value.toLowerCase()) ||
-        item.category?.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredNews(filtered);
-  };
+  // Search funksiyası
 
-  // Silmə funksiyası
+  // Delete funksiyası
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Silmək istədiyinizdən əminsiniz?",
@@ -106,8 +105,8 @@ function AdminNewsPage() {
         await axios.delete(`${Base_Url_Server}news/${id}`, {
           headers: { Authorization: `Bearer ${tokenAdmin}` },
         });
-        setNews(news.filter((n) => n.id !== id));
-        setFilteredNews(filteredNews.filter((n) => n.id !== id));
+        const updated = news.filter((n) => n.id !== id);
+        setNews(updated);
         Swal.fire("Silindi!", "Xəbər uğurla silindi.", "success");
       } catch (err) {
         Swal.fire("Xəta!", "Xəbər silinə bilmədi.", "error");
@@ -115,7 +114,7 @@ function AdminNewsPage() {
     }
   };
 
-  // Redaktə başlatmaq
+  // Edit funksiyaları
   const handleEditStart = (item) => {
     setEditId(item.id);
     setFormDataEdit({
@@ -173,22 +172,22 @@ function AdminNewsPage() {
     <div className={styles.adminNews}>
       <div className={styles.header}>
         <h3>Xəbərləri idarə et</h3>
-
-        {/* 🔍 Axtarış */}
         <div className={styles.searchBox}>
           <input
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+            }}
             type="text"
             placeholder="Başlıq, kateqoriya və ya kontent üzrə axtar..."
-            value={searchValue}
-            onChange={(e) => handleSearch(e.target.value)}
+            value={searchTerm}
           />
         </div>
-
         <button onClick={() => navigate("/admin/add-news")}>
           <AddCircleOutlineIcon /> Əlavə et
         </button>
       </div>
 
+      {/* Edit Form */}
       {editId && (
         <form className={styles.editForm} onSubmit={handleEditSubmit}>
           <div className={styles.inputGroup}>
@@ -243,24 +242,6 @@ function AdminNewsPage() {
             </select>
           </div>
 
-          <div className={styles.inputGroup}>
-            <label>Mövcud Şəkil</label>
-            <img
-              src={
-                Base_Url_Server +
-                news
-                  .find((n) => n.id === editId)
-                  ?.image?.split("/home/muhasibatjurnal/backend-mmu/")[1]
-              }
-              alt="current"
-              style={{
-                width: "100px",
-                borderRadius: "6px",
-                marginBottom: "10px",
-              }}
-            />
-          </div>
-
           <div className={styles.buttonsWrapper}>
             <button type="submit" disabled={loader}>
               {loader ? "Yüklənir..." : "Yenilə"}
@@ -276,6 +257,7 @@ function AdminNewsPage() {
         </form>
       )}
 
+      {/* News Table */}
       <div className={styles.newsList}>
         <table>
           <thead>
@@ -291,7 +273,7 @@ function AdminNewsPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredNews.map((n, i) => (
+            {news.map((n, i) => (
               <tr key={n.id}>
                 <td>{i + 1}</td>
                 <td>
@@ -329,10 +311,28 @@ function AdminNewsPage() {
             ))}
           </tbody>
         </table>
+        {pageCount > 1 && (
+          <div className={styles.pagination}>
+            <button onClick={() => setPage(page > 1 ? page - 1 : pageCount)}>
+              {"<"}
+            </button>
+            {Array.from({ length: pageCount }, (_, i) => (
+              <button
+                key={i}
+                className={page === i + 1 ? styles.activePage : ""}
+                onClick={() => setPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button onClick={() => setPage(page < pageCount ? page + 1 : 1)}>
+              {">"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 export default AdminNewsPage;
-  

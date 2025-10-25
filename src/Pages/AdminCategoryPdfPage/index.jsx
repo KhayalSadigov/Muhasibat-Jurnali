@@ -39,10 +39,12 @@ function AdminCategoryPagePdfs() {
   }, []);
   console.log(categories);
   useEffect(() => {
+    store.loader.setData(true);
     axios
       .get(Base_Url_Server + "categories/pdfs")
       .then((res) => setCategories(res.data.data.categories))
-      .catch((err) => console.log("Kateqoriya çəkilmədi:", err));
+      .catch((err) => console.log("Kateqoriya çəkilmədi:", err))
+      .finally(() => store.loader.setData(false));
   }, []);
 console.log(Base_Url_Server + "categories/pdfs")
 

@@ -4,6 +4,7 @@ import Base_Url_Server from "../../Constants/baseUrl";
 import axios from "axios";
 import dataContext from "../../Contexts/GlobalState";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import CircularProgress from "@mui/material/CircularProgress";
 
 function AddNewsPage() {
@@ -18,15 +19,15 @@ function AddNewsPage() {
     language: "az",
   });
   const [imageFile, setImageFile] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [categories, setCategories] = useState(null);
+
   useEffect(() => {
     axios
       .get(Base_Url_Server + "categories")
       .then((res) => setCategories(res.data.data.categories))
       .catch((err) => console.log("Kateqoriya çəkilmədi:", err));
   }, []);
+
   // ✅ Admin token yoxlaması
   useEffect(() => {
     const tokenAdmin = localStorage.getItem("tokenAdmin");
@@ -58,26 +59,21 @@ function AddNewsPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setErrorMessage("");
   };
 
   // ✅ Şəkil seçimi
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) setImageFile(file);
-    setErrorMessage("");
   };
 
   // ✅ Form göndərilməsi
   const handleSubmit = async (e) => {
-    setLoader(true);
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
+    setLoader(true);
 
     const tokenAdmin = localStorage.getItem("tokenAdmin");
-    console.log(formData);
-    // Əsas sahə yoxlaması
+
     if (
       !formData.title ||
       !formData.content ||
@@ -86,7 +82,12 @@ function AddNewsPage() {
       !imageFile
     ) {
       setLoader(false);
-      setErrorMessage("Zəhmət olmasa bütün sahələri doldurun.");
+      Swal.fire({
+        icon: "warning",
+        title: "Diqqət!",
+        text: "Zəhmət olmasa bütün sahələri doldurun.",
+        confirmButtonColor: "#3085d6",
+      });
       return;
     }
 
@@ -99,31 +100,43 @@ function AddNewsPage() {
     formDataToSend.append("image", imageFile);
 
     try {
-      const res = await axios.post(Base_Url_Server + "news", formDataToSend, {
+      await axios.post(Base_Url_Server + "news", formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${tokenAdmin}`,
         },
       });
+
       setLoader(false);
-      setSuccessMessage("✅ Xəbər uğurla əlavə olundu!");
-      window.scrollTo(0, 0);
+      Swal.fire({
+        icon: "success",
+        title: "Əla!",
+        text: "Xəbər uğurla əlavə olundu.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
       setFormData({
         title: "",
         content: "",
         categoryId: "",
         date: "",
-        language: "",
+        language: "az",
       });
       setImageFile(null);
 
-      // 2 saniyə sonra yönləndir
-      setTimeout(() => navigate("/admin/news"), 2000);
+      setTimeout(() => navigate("/admin/news"), 1500);
     } catch (error) {
+      setLoader(false);
       const msg =
         error.response?.data?.message ||
-        "❌ Xəbər əlavə edilərkən xəta baş verdi.";
-      setErrorMessage(msg);
+        "Xəbər əlavə edilərkən xəta baş verdi.";
+      Swal.fire({
+        icon: "error",
+        title: "Xəta!",
+        text: msg,
+        confirmButtonColor: "#d33",
+      });
     }
   };
 
@@ -131,12 +144,6 @@ function AddNewsPage() {
     <div className={styles.addNewsPage}>
       <div className={styles.addNews}>
         <h2>Yeni Xəbər Əlavə Et</h2>
-
-        {/* ✅ Xəta və uğur mesajları */}
-        {errorMessage && <div className={styles.error}>{errorMessage}</div>}
-        {successMessage && (
-          <div className={styles.success}>{successMessage}</div>
-        )}
 
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
@@ -185,15 +192,18 @@ function AddNewsPage() {
               onChange={handleChange}
               required
             >
-              <option value="" selected hidden disabled>
-                Kateqoriya
+              <option value="" disabled hidden>
+                Kateqoriya seçin
               </option>
               {categories &&
-                categories.map((e) => {
-                  return <option value={e.id}>{e.name}</option>;
-                })}
+                categories.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.name}
+                  </option>
+                ))}
             </select>
           </div>
+
           <div className={styles.formGroup}>
             <label>Dil</label>
             <select
@@ -202,9 +212,6 @@ function AddNewsPage() {
               onChange={handleChange}
               required
             >
-              <option selected hidden disabled>
-                Dil seçin
-              </option>
               <option value="az">Azərbaycan dili</option>
               <option value="ru">Rus dili</option>
             </select>
@@ -217,10 +224,13 @@ function AddNewsPage() {
               name="date"
               value={formData.date}
               onChange={handleChange}
+              required
             />
           </div>
 
-          <button type="submit">Əlavə Et</button>
+          <button type="submit" disabled={loader}>
+            {loader ? <CircularProgress size={20} /> : "Əlavə Et"}
+          </button>
         </form>
       </div>
     </div>

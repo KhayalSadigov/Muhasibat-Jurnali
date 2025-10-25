@@ -6,9 +6,9 @@ import dataContext from "../../Contexts/GlobalState";
 import axios from "axios";
 import Base_Url_Server from "../../Constants/baseUrl";
 import Footer from "../../Layouts/Footer";
-// import Footer from "./../../Layouts/Footer";
+import CircularProgress from "@mui/material/CircularProgress";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
-
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 function HomePage() {
   const navigator = useNavigate();
@@ -50,19 +50,16 @@ function HomePage() {
     });
   }, []);
   useEffect(() => {
-    axios.get(Base_Url_Server + "pdfs/preview?limit=4").then((res) => {
+    axios.get(Base_Url_Server + "pdfs/preview?limit=3").then((res) => {
       setLibrary(res.data.data.pdfs);
     });
   }, []);
   useEffect(() => {
     axios.get(Base_Url_Server + "services/preview?limit=3").then((res) => {
       setServices(res.data.data.services);
-      console.log(first)
+      console.log(first);
     });
   }, []);
-  console.log(services)
-
-  console.log(news);
 
   return (
     <>
@@ -71,6 +68,15 @@ function HomePage() {
           <div className={styles.bgImage}>
             <img src={bgImage} alt="accountant" />
             <div className={styles.glass}>
+              <div
+                className={styles.arrow}
+                onClick={() => {
+                  window.scrollTo(0, 500);
+                }}
+              >
+                <span>Kəşf et!</span>
+                <ArrowForwardIosIcon className={styles.icon} />
+              </div>
               <div className={styles.container}>
                 <h1>
                   Vergi və hesabat işləri artıq çətin deyil. Dəqiq və etibarlı
@@ -105,7 +111,8 @@ function HomePage() {
             <div className={styles.hr}></div>
           </div>
           <div className={styles.container}>
-            {news &&
+            {news ? (
+              news &&
               news?.map((e) => {
                 return (
                   <div key={e.id} className={styles.card}>
@@ -131,13 +138,22 @@ function HomePage() {
                     </div>
                   </div>
                 );
-              })}
+              })
+            ) : (
+              <div className={styles.loader}>
+                <CircularProgress />
+              </div>
+            )}
           </div>
           <div className={styles.footer}>
-            <span className={styles.text} onClick={()=>{
-              navigator('/news')
-            }
-            }>Daha çox</span>
+            <span
+              className={styles.text}
+              onClick={() => {
+                navigator("/news");
+              }}
+            >
+              Daha çox
+            </span>
           </div>
         </section>
         <section className={`${styles.library} ${styles.section}`}>
@@ -147,24 +163,80 @@ function HomePage() {
             <div className={styles.hr}></div>
           </div>
           <div className={styles.container}>
-            {library &&
+            {library ? (
+              library &&
               library?.map((e) => {
                 return (
                   <div key={e.id} className={styles.card}>
                     <div className={styles.cardContent}>
-                      <img src={e.cover} alt={e.title} />
-                      <div className={styles.glass}>
-                        <button>PDF-i əldə et</button>
-                        <button>Demo versiyaya bax</button>
-                        <h3>{e.title}</h3>
+                      <div className={styles.cardHeader}>
+                        <h2>
+                          <span>{e.title}</span>{" "}
+                          {/* <span>{e.language.toLocaleUpperCase()}</span> */}
+                        </h2>
+                        <h5>
+                          {e.description?.length <= 200
+                            ? e.description
+                            : e.description?.slice(0, 200) + "..."}
+                        </h5>
+                      </div>
+                      <div className={styles.cardBody}>
+                        <div className={styles.cardInfo}>
+                          <span>
+                            {e.created_at?.split("T")[0].replaceAll("-", "/")}
+                          </span>
+                          <span>{e.category?.name}</span>
+                        </div>
+                        <div className={styles.cardButtons}>
+                          {e.hasAccess ? (
+                            <span
+                              onClick={() => {
+                                // PDF URL-ni gizlədək - downloadUrl istifadə edək
+                                if (e.downloadUrl) {
+                                  window.open(e.downloadUrl, "_blank");
+                                } else {
+                                  navigate(`/pdf/${e.id}`);
+                                }
+                              }}
+                              className={styles.accessible}
+                            >
+                              <span>
+                                {e.accessType === "subscription"
+                                  ? "Abunəliklə Əlçatandır"
+                                  : "Alınıb - Əlçatandır"}
+                              </span>
+                            </span>
+                          ) : (
+                            <span
+                              onClick={() => {
+                                navigate(`/library/${e.id}`);
+                              }}
+                            >
+                              <span>PDF-i əldə et</span>
+                              <b>{e.price} AZN</b>
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 );
-              })}
+              })
+            ) : (
+              <div className={styles.loader}>
+                <CircularProgress />
+              </div>
+            )}
           </div>
           <div className={styles.footer}>
-            <span className={styles.text}>Daha çox</span>
+            <span
+              onClick={() => {
+                navigator("/library");
+              }}
+              className={styles.text}
+            >
+              Daha çox
+            </span>
           </div>
         </section>
         <section className={`${styles.services} ${styles.section}`}>
@@ -174,7 +246,8 @@ function HomePage() {
             <div className={styles.hr}></div>
           </div>
           <div className={styles.container}>
-            {services &&
+            {services ? (
+              services &&
               services?.map((e) => {
                 return (
                   <div key={e.id} className={styles.card}>
@@ -185,14 +258,26 @@ function HomePage() {
                         <div className={styles.hr}></div>
                       </div>
                       <div className={styles.title}>{e.name}</div>
-                      <div className={styles.price}>{e.price} $</div>
+                      <div className={styles.price}>{e.price} AZN</div>
                     </div>
                   </div>
                 );
-              })}
+              })
+            ) : (
+              <div className={styles.loader}>
+                <CircularProgress />
+              </div>
+            )}
           </div>
           <div className={styles.footer}>
-            <span className={styles.text}>Daha çox</span>
+            <span
+              onClick={() => {
+                navigator("/services");
+              }}
+              className={styles.text}
+            >
+              Daha çox
+            </span>
           </div>
         </section>
       </main>

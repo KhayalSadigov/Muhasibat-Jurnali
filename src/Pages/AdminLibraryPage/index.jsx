@@ -6,6 +6,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import Base_Url_Server from "../../Constants/baseUrl";
 import dataContext from "../../Contexts/GlobalState";
 
@@ -13,7 +14,6 @@ function AdminLibraryPage() {
   const navigate = useNavigate();
   const store = useContext(dataContext);
   const [books, setBooks] = useState([]);
-  const [filteredBooks, setFilteredBooks] = useState([]);
   const [categories, setCategories] = useState([]);
   const [editingBook, setEditingBook] = useState(null);
   const [editData, setEditData] = useState({
@@ -23,7 +23,9 @@ function AdminLibraryPage() {
     price: "",
     language: "",
   });
-  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [pageCount, setPageCount] = useState(1);
+  const [page, setPage] = useState(1);
 
   // Admin auth yoxlanışı
   useEffect(() => {
@@ -52,45 +54,58 @@ function AdminLibraryPage() {
   useEffect(() => {
     const getData = async () => {
       try {
+        store.loader.setData(true);
         const [pdfRes, catRes] = await Promise.all([
-          axios.get("https://api.muhasibatjurnal.az/pdfs"),
+          axios.get(`https://api.muhasibatjurnal.az/pdfs?page=${page}&search=${searchTerm}`),
           axios.get("https://api.muhasibatjurnal.az/categories/pdfs"),
         ]);
         setBooks(pdfRes.data.data.pdfs || []);
-        setFilteredBooks(pdfRes.data.data.pdfs || []);
         setCategories(catRes.data.data.categories || []);
+        setPageCount(pdfRes.data.data.pagination.total_pages);
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        store.loader.setData(false);
       }
     };
     getData();
-  }, []);
+  }, [page, searchTerm]);
 
-  // DELETE
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm(
-      "Kitabı silmək istədiyinizə əminsiniz?"
-    );
-    if (!confirmDelete) return;
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Kitabı silmək istədiyinizə əminsiniz?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Bəli, sil!",
+      cancelButtonText: "Ləğv et",
+    });
 
-    const tokenAdmin = localStorage.getItem("tokenAdmin");
-
-    axios
-      .delete(`${Base_Url_Server}pdfs/${id}`, {
-        headers: { Authorization: `Bearer ${tokenAdmin}` },
-      })
-      .then(() => {
-        const updated = books.filter((b) => b.id !== id);
-        setBooks(updated);
-        setFilteredBooks(updated);
-        alert("Kitab uğurla silindi!");
-      })
-      .catch(() => alert("Silinmə zamanı xəta baş verdi!"));
+    if (result.isConfirmed) {
+      const tokenAdmin = localStorage.getItem("tokenAdmin");
+      try {
+        await axios.delete(`${Base_Url_Server}pdfs/${id}`, {
+          headers: { Authorization: `Bearer ${tokenAdmin}` },
+        });
+        setBooks((prev) => prev.filter((b) => b.id !== id));
+        Swal.fire({
+          icon: "success",
+          title: "Kitab uğurla silindi!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch {
+        Swal.fire({
+          icon: "error",
+          title: "Silinmə zamanı xəta baş verdi!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    }
   };
 
-  // EDIT
   const openEditForm = (book) => {
     setEditingBook(book);
     setEditData({
@@ -101,32 +116,38 @@ function AdminLibraryPage() {
       language: book.language,
     });
   };
+
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditData((prev) => ({ ...prev, [name]: value })); // düz variant
+    setEditData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const submitEdit = (e) => {
-    console.log(editData);
+  const submitEdit = async (e) => {
     e.preventDefault();
     const tokenAdmin = localStorage.getItem("tokenAdmin");
-    console.log(editingBook);
-    axios
-      .put(`${Base_Url_Server}pdfs/${editingBook.id}`, editData, {
+    try {
+      await axios.put(`${Base_Url_Server}pdfs/${editingBook.id}`, editData, {
         headers: { Authorization: `Bearer ${tokenAdmin}` },
-      })
-      .then(async () => {
-        axios.get("https://api.muhasibatjurnal.az/pdfs").then((res) => {
-          setBooks(res.data.data.pdfs || []);
-          setFilteredBooks(res.data.data.pdfs || []);
-          setEditingBook(null);
-          alert("Kitab uğurla redaktə olundu!");
-        });
-      })
-      .catch(() => alert("Redaktə zamanı xəta baş verdi!"));
-  };
+      });
+      const res = await axios.get(`https://api.muhasibatjurnal.az/pdfs?page=${page}&search=${searchTerm}`);
+      setBooks(res.data.data.pdfs || []);
+      setEditingBook(null);
 
-  if (loading) return <p>Yüklənir...</p>;
+      Swal.fire({
+        icon: "success",
+        title: "Kitab uğurla redaktə olundu!",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch {
+      Swal.fire({
+        icon: "error",
+        title: "Redaktə zamanı xəta baş verdi!",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
+  };
 
   return (
     <div className={styles.adminBooks}>
@@ -136,13 +157,7 @@ function AdminLibraryPage() {
           <input
             type="text"
             placeholder="Axtar"
-            onChange={(e) => {
-              const val = e.target.value.toLowerCase();
-              const filtered = books.filter((book) =>
-                book.title.toLowerCase().includes(val)
-              );
-              setFilteredBooks(filtered);
-            }}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <button onClick={() => navigate("/admin/add-book")}>
@@ -151,63 +166,26 @@ function AdminLibraryPage() {
       </div>
 
       {/* Edit Form */}
-      <div
-        className={styles.editForm}
-        style={editingBook ? {} : { maxHeight: "0", padding: "0" }}
-      >
+      <div className={styles.editForm} style={editingBook ? {} : { maxHeight: "0", padding: "0" }}>
         <form onSubmit={submitEdit} style={editingBook ? { opacity: "1" } : {}}>
-          <input
-            type="text"
-            name="title"
-            value={editData.title}
-            onChange={handleEditChange}
-            placeholder="Başlıq"
-            required
-          />
-          <textarea
-            name="description"
-            value={editData.description}
-            onChange={handleEditChange}
-            placeholder="Təsvir"
-            rows={3}
-          />
-          <select
-            name="categoryId"
-            value={editData.categoryId}
-            onChange={handleEditChange}
-          >
+          <input type="text" name="title" value={editData.title} onChange={handleEditChange} placeholder="Başlıq" required />
+          <textarea name="description" value={editData.description} onChange={handleEditChange} placeholder="Təsvir" rows={3} />
+          <select name="categoryId" value={editData.categoryId} onChange={handleEditChange}>
             <option value="">Kateqoriya seç</option>
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
-          <input
-            type="text"
-            name="price"
-            value={editData.price}
-            onChange={handleEditChange}
-            placeholder="Qiymət"
-          />
-
-          {/* DİL SELECTİ */}
-          <select
-            name="language"
-            value={editData.language}
-            onChange={handleEditChange}
-          >
+          <input type="text" name="price" value={editData.price} onChange={handleEditChange} placeholder="Qiymət" />
+          <select name="language" value={editData.language} onChange={handleEditChange}>
             <option value="">Dil seç</option>
             <option value="az">Azərbaycan dili</option>
             <option value="en">English</option>
             <option value="ru">Русский</option>
           </select>
-
           <div className={styles.buttonGroup}>
             <button type="submit">Yadda saxla</button>
-            <button type="button" onClick={() => setEditingBook(null)}>
-              Ləğv et
-            </button>
+            <button type="button" onClick={() => setEditingBook(null)}>Ləğv et</button>
           </div>
         </form>
       </div>
@@ -230,29 +208,16 @@ function AdminLibraryPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredBooks.map((book, i) => (
+            {books.map((book, i) => (
               <tr key={book.id}>
                 <td>{i + 1}</td>
                 <td className={styles.title}>{book.title}</td>
-                <td className={styles.title}>
-                  {book.description?.length <= 100
-                    ? book.description
-                    : book.description?.slice(0, 100) + "..."}
-                </td>
+                <td className={styles.title}>{book.description?.length <= 100 ? book.description : book.description?.slice(0, 100) + "..."}</td>
                 <td>{book.language}</td>
                 <td>{book.price}</td>
                 <td>{book.category.name}</td>
                 <td>
-                  <a
-                    href={
-                      Base_Url_Server +
-                      book.file_path?.split(
-                        "/home/muhasibatjurnal/backend-mmu/"
-                      )[1]
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a href={Base_Url_Server + book.file_path?.split("/home/muhasibatjurnal/backend-mmu/")[1]} target="_blank" rel="noreferrer">
                     Demo
                   </a>
                 </td>
@@ -274,6 +239,19 @@ function AdminLibraryPage() {
             ))}
           </tbody>
         </table>
+
+        {/* Pagination */}
+        {pageCount > 1 && (
+          <div className={styles.pagination}>
+            <button onClick={() => setPage(page > 1 ? page - 1 : pageCount)}>{"<"}</button>
+            {Array.from({ length: pageCount }, (_, i) => (
+              <button key={i} className={page === i + 1 ? styles.activePage : ""} onClick={() => setPage(i + 1)}>
+                {i + 1}
+              </button>
+            ))}
+            <button onClick={() => setPage(page < pageCount ? page + 1 : 1)}>{">"}</button>
+          </div>
+        )}
       </div>
     </div>
   );

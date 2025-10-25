@@ -2,13 +2,14 @@ import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import AdminSidebar from "../Layouts/AdminSideBar";
 import AdminHeader from "../Layouts/AdminHeader";
+import AdminLoader from "../Components/AdminLoader";
 
 function AdminMainRoute() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   function handleCtrlL(event) {
     if (event.ctrlKey && event.key === "e") {
       event.preventDefault();
-      console.log("first")
+      console.log("first");
       navigate("/");
     }
   }
@@ -38,6 +39,7 @@ function AdminMainRoute() {
           }}
           className="custom-scrollbar"
         >
+          <AdminLoader />
           <Outlet />
         </div>
       </div>

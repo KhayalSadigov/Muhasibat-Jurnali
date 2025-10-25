@@ -48,10 +48,13 @@ function AdminServicesPage() {
 
   // Servisləri çək
   const fetchServices = () => {
+    store.loader.setData(true);
     axios.get("https://api.muhasibatjurnal.az/services").then((res) => {
       const data = res.data.data.services;
       setServices(data);
       setFilteredServices(data);
+    }).finally(() => {
+      store.loader.setData(false);
     });
   };
 

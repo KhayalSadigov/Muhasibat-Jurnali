@@ -26,6 +26,11 @@ import AdminCategoryPagePdfs from "../Pages/AdminCategoryPdfPage";
 import TermsOfUsePage from "../Pages/TermsOfUse";
 import PrivacyPolicyPage from "../Pages/PrivacyPolicy";
 import CopyrightPage from "../Pages/Copyright";
+import PaymentSuccess from "../Pages/PaymentSuccess";
+import PaymentError from "../Pages/PaymentError";
+import PDFDetailPage from "../Pages/PDFDetailPage";
+import NewsDetailPage from "../Pages/NewsDetailPage";
+import ServiceDetailPage from "../Pages/ServiceDetailPage";
 
 const router = createBrowserRouter([
   {
@@ -87,6 +92,26 @@ const router = createBrowserRouter([
       {
         path: "copyright",
         element: <CopyrightPage />,
+      },
+      {
+        path: "payment/success",
+        element: <PaymentSuccess />,
+      },
+      {
+        path: "payment/error",
+        element: <PaymentError />,
+      },
+      {
+        path: "library/:id",
+        element: <PDFDetailPage />,
+      },
+      {
+        path: "news/:id",
+        element: <NewsDetailPage />,
+      },
+      {
+        path: "services/:id",
+        element: <ServiceDetailPage />,
       },
     ],
   },

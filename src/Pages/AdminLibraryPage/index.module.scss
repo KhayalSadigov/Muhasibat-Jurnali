@@ -203,3 +203,25 @@
     }
   }
 }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px;
+    button {
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      background-color: white;
+      transition: all 0.3s;
+
+      &:hover { background-color: #032062; color: white; }
+    }
+
+    .activePage {
+      background-color: #032062;
+      color: white;
+      font-weight: bold;
+    }
+  }

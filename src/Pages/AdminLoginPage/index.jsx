@@ -4,10 +4,12 @@ import axios from "axios";
 import Base_Url_Server from "../../Constants/baseUrl";
 import dataContext from "../../Contexts/GlobalState";
 import { useNavigate } from "react-router-dom";
-import CircularProgress from '@mui/material/CircularProgress';
-// store importu əskik idi
+import CircularProgress from "@mui/material/CircularProgress";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 const AdminLoginPage = () => {
+  const [pass, setPass] = useState(false);
+
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -87,8 +89,8 @@ const AdminLoginPage = () => {
       <form className={styles.form} onSubmit={handleSubmit}>
         <h2 className={styles.title}>Mühasibat Jurnalı</h2>
         <div className={styles.inputGroup}>
-          <label htmlFor="email">Email</label>
           <input
+            placeholder="İstifadəçi adı"
             id="email"
             name="email"
             value={form.email}
@@ -98,9 +100,9 @@ const AdminLoginPage = () => {
           />
         </div>
         <div className={styles.inputGroup}>
-          <label htmlFor="password">Şifrə</label>
           <input
-            type="password"
+            placeholder="Şifrə"
+            type={pass ? "text" : "password"}
             id="password"
             name="password"
             value={form.password}
@@ -108,13 +110,20 @@ const AdminLoginPage = () => {
             required
             className={styles.input}
           />
+          <RemoveRedEyeIcon
+            className={styles.eyeIcon}
+            style={pass ? { color: "#032062" } : {}}
+            onClick={() => setPass(!pass)}
+          />
         </div>
         {/* Error mesajı göstərilməsi əskik idi */}
         {error && <div className={styles.error}>{error}</div>}
         <button type="submit" className={styles.button}>
-          {
-            loading ? <CircularProgress size={24} color="inherit" /> : "Daxil ol"
-          }
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "Daxil ol"
+          )}
         </button>
       </form>
     </div>

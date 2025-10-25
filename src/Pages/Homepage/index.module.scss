@@ -1,6 +1,13 @@
 main {
   padding-bottom: 60px;
 }
+.loader {
+  width: 100%;
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .hero {
   height: 100vh;
   width: 100vw;
@@ -21,6 +28,25 @@ main {
       display: flex;
       align-items: center;
       //   justify-content: center;
+      .arrow {
+        position: absolute;
+        bottom: 20px;
+        right: 50%;
+        transform: translateX(50%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.2s;
+        color: #032062;
+        .icon {
+          transform: rotateZ(90deg);
+        }
+        cursor: pointer;
+        &:hover {
+          transform: translate(50%, 10px);
+        }
+      }
       .container {
         width: 80%;
         margin: 0 auto;
@@ -93,25 +119,25 @@ main {
   padding-bottom: 20px;
 
   .header {
-
     text-align: center;
     padding-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-wrap: nowrap;
-
-    h2{
-      color: #fff;
+    gap: 10px;
+    h2 {
+      color: #032062;
       padding: 5px 20px;
-      background-color: #eac700;
       border-radius: 10px;
       // margin-bottom: 30px;
+      margin: 0;
+      padding: 0;
     }
     .hr {
       height: 1px;
-      width: 100%;
-      border: 10px solid #eac700;
+      width: 130px;
+      border: 2px solid #032062;
     }
   }
   .container {
@@ -186,7 +212,7 @@ main {
 }
 .library {
   .card {
-    width: calc(100% / 4);
+    width: calc(100% / 3);
     padding: 10px;
     margin-bottom: 20px;
     @media screen and (max-width: 900px) {
@@ -194,79 +220,79 @@ main {
     }
     @media screen and (max-width: 750px) {
       width: calc(100% / 2);
+      span {
+        font-size: 12px;
+      }
+      .cardInfo {
+        flex-direction: column;
+      }
     }
     @media screen and (max-width: 500px) {
       width: 100%;
     }
     .cardContent {
       width: 100%;
-      aspect-ratio: 3/4;
       border-radius: 10px;
-      position: relative;
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-      }
-      .glass {
+      background-color: #fff;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .cardHeader {
+        height: 80px;
         padding: 10px;
-
         display: flex;
         flex-direction: column;
+        gap: 15px;
+        h2 {
+          font-size: 18px;
+          text-align: start;
+          border-bottom: 1px solid #032062;
+          padding: 0px 10px 10px 10px;
+          display: flex;
+          justify-content: space-between;
+        }
+        h5 {
+          padding: 0px 15px 10px 15px;
+        }
+      }
+      .cardInfo {
+        padding: 0 15px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+      }
+      .cardButtons {
+        height: 60px;
+        display: flex;
         justify-content: center;
         align-items: center;
-        transition: 0.2s;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 99%;
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.633);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        gap: 10px;
-        button {
-          //   visibility: hidden;
-          transition: 0.1s;
-          width: 80%;
-          background-color: #ffffff00;
-          color: rgba(255, 255, 255, 0);
-          border: none;
-          padding: 10px;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-        h3 {
-          bottom: 50%;
-          left: 50%;
-          transform: translate(-50%, 50%);
+        padding: 10px;
+        span {
+          background-color: #032062;
           color: white;
-          position: absolute;
-          transition: 0.1s;
-        }
-        &:hover {
-          //   cursor: pointer;
-          //   background: rgba(0, 0, 0, 0);
-          button {
-            &:nth-of-type(1) {
-              background-color: #032062;
-              color: #fff;
-              &:hover {
-                background-color: #001139;
-              }
-            }
-            &:nth-of-type(2) {
-              background-color: #ffde20;
-              color: #fff;
-              &:hover {
-                background-color: #eac700;
-              }
+          padding: 5px 10px;
+          border-radius: 10px;
+          width: 100%;
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: 0.2s;
+          b {
+            text-wrap: nowrap;
+          }
+          &.accessible {
+            background-color: #28a745;
+            cursor: default;
+
+            b {
+              font-size: 20px;
             }
           }
-          h3 {
-            color: #03206200;
+          &:hover {
+            opacity: 0.7;
           }
         }
       }

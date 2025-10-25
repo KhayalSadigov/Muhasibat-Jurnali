@@ -27,6 +27,13 @@
       }
     }
   }
+  .loader {
+    width: 100%;
+    min-height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .serviceList {
     background-color: #f7f7f7;
     .header {
@@ -55,12 +62,12 @@
       display: flex;
       justify-content: center;
       margin-bottom: 30px;
-      input{
+      input {
         padding: 10px;
         border-radius: 8px;
         width: 50%;
       }
-      select{
+      select {
         padding: 5px;
         border-radius: 8px;
         width: 20%;

@@ -5,7 +5,7 @@ import axios from "axios";
 import Base_Url_Server from "../../Constants/baseUrl";
 import dataContext from "../../Contexts/GlobalState";
 import { useNavigate } from "react-router-dom";
-
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 const RegisterPage = () => {
   const [form, setForm] = useState({
     email: "",
@@ -13,6 +13,8 @@ const RegisterPage = () => {
   });
   const [error, setError] = useState("");
   const store = useContext(dataContext);
+  const [loader, setLoader] = useState(false);
+  const [pass, setPass] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,10 +29,11 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoader(true);
     axios
       .post(Base_Url_Server + "auth/register", form)
       .then((response) => {
+        setLoader(false);
         const { user, token } = response.data.data;
 
         if (!user || !token) {
@@ -46,6 +49,7 @@ const RegisterPage = () => {
         navigate("/");
       })
       .catch((error) => {
+        setLoader(false);
         if (error.response?.data?.message) {
           setError(error.response.data.message);
         } else {
@@ -70,20 +74,27 @@ const RegisterPage = () => {
           required
         />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Şifrə"
-          value={form.password}
-          onChange={handleChange}
-          className={styles.input}
-          required
-        />
+        <div className={styles.inputGroup}>
+          <input
+            type= {pass ? "text" : "password"}
+            name="password"
+            placeholder="Şifrə"
+            value={form.password}
+            onChange={handleChange}
+            className={styles.input}
+            required
+          />
+          <RemoveRedEyeIcon
+            className={styles.eyeIcon}
+            style={pass ? { color: "#032062" } : {}}
+            onClick={() => setPass(!pass)}
+          />
+        </div>
 
         {error && <div className={styles.error}>{error}</div>}
 
         <button type="submit" className={styles.button}>
-          Hesab yarat
+          {loader ? "Yüklənir..." : "Hesab yarat"}
         </button>
 
         <p className={styles.registerText}>

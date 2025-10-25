@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Base_Url_Server from "../../Constants/baseUrl";
 import dataContext from "../../Contexts/GlobalState";
+import Swal from "sweetalert2";
 
 function AdminUsersPage() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function AdminUsersPage() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [editingUser, setEditingUser] = useState(null); // Redaktə olunan istifadəçi
+  const [editingUser, setEditingUser] = useState(null);
   const [editData, setEditData] = useState({ password: "", role: 1 });
 
   useEffect(() => {
@@ -24,7 +25,12 @@ function AdminUsersPage() {
     const adminID = localStorage.getItem("admin");
     if (!tokenAdmin || !adminID) {
       store.admin.setData(null);
-      navigate("/admin/login");
+      Swal.fire({
+        title: "Giriş tələb olunur",
+        text: "Admin hesabı ilə daxil olun!",
+        icon: "warning",
+        confirmButtonText: "OK",
+      }).then(() => navigate("/admin/login"));
     } else {
       axios
         .get(Base_Url_Server + "users/" + adminID, {
@@ -35,7 +41,12 @@ function AdminUsersPage() {
           store.admin.setData(null);
           localStorage.removeItem("tokenAdmin");
           localStorage.removeItem("admin");
-          navigate("/admin/login");
+          Swal.fire({
+            title: "Giriş xətası",
+            text: "Token etibarsızdır, yenidən daxil olun!",
+            icon: "error",
+            confirmButtonText: "OK",
+          }).then(() => navigate("/admin/login"));
         });
     }
   }, []);
@@ -59,30 +70,44 @@ function AdminUsersPage() {
       });
   }, []);
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm(
-      "İstifadəçini silmək istədiyinizə əminsiniz?"
-    );
-    if (!confirmDelete) return;
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Diqqət!",
+      text: "İstifadəçini silmək istədiyinizə əminsiniz?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Bəli, sil",
+      cancelButtonText: "Ləğv et",
+    });
 
-    const tokenAdmin = localStorage.getItem("tokenAdmin");
+    if (result.isConfirmed) {
+      const tokenAdmin = localStorage.getItem("tokenAdmin");
 
-    axios
-      .delete(`${Base_Url_Server}users/${id}`, {
-        headers: {
-          Authorization: `Bearer ${tokenAdmin}`,
-        },
-      })
-      .then(() => {
-        setUsers(users.filter((user) => user.id !== id));
-        alert("İstifadəçi uğurla silindi!");
-      })
-      .catch(() => {
-        alert("Silinmə zamanı xəta baş verdi!");
-      });
+      axios
+        .delete(`${Base_Url_Server}users/${id}`, {
+          headers: { Authorization: `Bearer ${tokenAdmin}` },
+        })
+        .then(() => {
+          setUsers(users.filter((user) => user.id !== id));
+          setFilteredUsers(filteredUsers.filter((user) => user.id !== id));
+          Swal.fire({
+            title: "Uğur ✅",
+            text: "İstifadəçi uğurla silindi!",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            title: "Xəta ❌",
+            text: "Silinmə zamanı xəta baş verdi!",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        });
+    }
   };
 
-  // Edit funksiyaları
   const openEditForm = (user) => {
     setEditingUser(user);
     setEditData({ password: "", role: user.role });
@@ -99,28 +124,29 @@ function AdminUsersPage() {
 
     axios
       .patch(`${Base_Url_Server}users/${editingUser.id}`, editData, {
-        headers: {
-          Authorization: `Bearer ${tokenAdmin}`,
-        },
+        headers: { Authorization: `Bearer ${tokenAdmin}` },
       })
-      .then((res) => {
-        // Local state-i güncəlləyirik
-        const newUsers = users.map((user) => {
-          return user.id === editingUser.id
-            ? { ...user, role: editData.role }
-            : user;
-        });
-        // console.log(editingUser.id ? { ...user, role: editData.role } : user)
+      .then(() => {
+        const newUsers = users.map((user) =>
+          user.id === editingUser.id ? { ...user, role: editData.role } : user
+        );
         setUsers(newUsers);
         setFilteredUsers(newUsers);
-        console.log(users);
-        console.log(users[0].role);
-        console.log(editData.role);
-
         setEditingUser(null);
+        Swal.fire({
+          title: "Uğur ✅",
+          text: "İstifadəçi redaktə edildi!",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
       })
       .catch(() => {
-        alert("Redaktə zamanı xəta baş verdi!");
+        Swal.fire({
+          title: "Xəta ❌",
+          text: "Redaktə zamanı xəta baş verdi!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       });
   };
 
@@ -134,12 +160,12 @@ function AdminUsersPage() {
           <input
             type="text"
             onChange={(e) => {
-              const filteredData = users.filter((user) => {
-                return user.email
+              const filteredData = users.filter((user) =>
+                user.email
                   .toLocaleUpperCase()
                   .trim()
-                  .includes(e.target.value.toLocaleUpperCase().trim());
-              });
+                  .includes(e.target.value.toLocaleUpperCase().trim())
+              );
               setFilteredUsers(filteredData);
             }}
             placeholder="Axtar"
@@ -147,7 +173,6 @@ function AdminUsersPage() {
         </div>
       </div>
 
-      {/* Edit form */}
       <div
         className={styles.editForm}
         style={editingUser ? {} : { height: "0", padding: "0" }}

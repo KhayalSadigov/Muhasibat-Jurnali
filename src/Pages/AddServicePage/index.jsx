@@ -1,15 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.scss";
-import Base_Url_Server from "../../Constants/baseUrl";
-import axios from "axios";
 import dataContext from "../../Contexts/GlobalState";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Base_Url_Server from "../../Constants/baseUrl";
+import Swal from "sweetalert2";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function AddServicePage() {
   const store = useContext(dataContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const tokenAdmin = localStorage.getItem("tokenAdmin");
@@ -22,9 +23,7 @@ function AddServicePage() {
         .get(`${Base_Url_Server}users/${adminID}`, {
           headers: { Authorization: `Bearer ${tokenAdmin}` },
         })
-        .then((response) => {
-          store.admin.setData(response.data.data.user);
-        })
+        .then((response) => store.admin.setData(response.data.data.user))
         .catch(() => {
           store.admin.setData(null);
           localStorage.removeItem("tokenAdmin");
@@ -53,22 +52,23 @@ function AddServicePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
+
     const tokenAdmin = localStorage.getItem("tokenAdmin");
+    if (!tokenAdmin) {
+      Swal.fire("Xəta ❌", "Token tapılmadı, yenidən daxil olun!", "error");
+      setLoading(false);
+      return;
+    }
 
     try {
-      const response = await axios.post(
-        `${Base_Url_Server}services`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenAdmin}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.post(`${Base_Url_Server}services`, formData, {
+        headers: {
+          Authorization: `Bearer ${tokenAdmin}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-      setMessage("✅ Servis uğurla əlavə olundu!");
+      Swal.fire("Uğur ✅", "Servis uğurla əlavə olundu!", "success");
       setFormData({
         name: "",
         description: "",
@@ -76,11 +76,14 @@ function AddServicePage() {
         currency: "AZN",
         is_active: true,
       });
-      navigate('/admin/services')
+      navigate("/admin/services");
     } catch (error) {
-
       console.error(error);
-      setMessage("❌ Xəta baş verdi, bir daha yoxlayın!");
+      Swal.fire(
+        "Xəta ❌",
+        error.response?.data?.message || "Əlavə etmə zamanı xəta baş verdi!",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -139,11 +142,15 @@ function AddServicePage() {
             </label>
           </div>
 
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} style={{ position: "relative" }}>
+            {loading && (
+              <CircularProgress
+                size={20}
+                style={{ color: "white", position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }}
+              />
+            )}
             {loading ? "Yüklənir..." : "Əlavə Et"}
           </button>
-
-          {message && <p className={styles.message}>{message}</p>}
         </form>
       </div>
     </div>

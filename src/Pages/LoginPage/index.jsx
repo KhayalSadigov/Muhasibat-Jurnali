@@ -4,15 +4,16 @@ import bg from "./../../Assets/heroImage.jpg";
 import axios from "axios";
 import Base_Url_Server from "../../Constants/baseUrl";
 import dataContext from "../../Contexts/GlobalState";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { useNavigate } from "react-router-dom"; // 🔹 Navigate üçün əlavə edildi
 
 const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [loader,setLoader] = useState(false)
+  const [loader, setLoader] = useState(false);
   const store = useContext(dataContext);
   const navigate = useNavigate(); // 🔹 Router istifadə olunur
-
+  const [pass, setPass] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userID = localStorage.getItem("user");
@@ -27,7 +28,7 @@ const LoginPage = () => {
         })
         .then((response) => {
           store.user.setData(response.data.data.user);
-          navigate("/profile"); 
+          navigate("/profile");
         })
         .catch(() => {
           store.user.setData(null);
@@ -49,11 +50,11 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoader(true)
+    setLoader(true);
     axios
       .post(Base_Url_Server + "auth/login", form)
       .then((response) => {
-        setLoader(false)
+        setLoader(false);
         if (response.data.data.user.role !== 1) {
           formReset();
           alert("Account not found");
@@ -69,7 +70,7 @@ const LoginPage = () => {
         }
       })
       .catch((error) => {
-        setLoader(false)
+        setLoader(false);
         if (error.response?.data?.message) {
           setError(error.response.data.message);
         } else {
@@ -92,15 +93,24 @@ const LoginPage = () => {
           className={styles.input}
           required
         />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className={styles.input}
-          required
-        />
+        <div className={styles.inputGroup}>
+          <input
+            type={pass ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className={styles.input}
+            required
+          />
+          <RemoveRedEyeIcon
+            className={styles.eyeIcon}
+            style={pass ? { color: "#032062" } : {}}
+            onClick={() => {
+              setPass(!pass);
+            }}
+          />
+        </div>
         {error && <div className={styles.error}>{error}</div>}
 
         <button type="submit" className={styles.button}>

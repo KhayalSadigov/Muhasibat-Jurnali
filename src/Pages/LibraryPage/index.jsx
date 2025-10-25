@@ -9,13 +9,16 @@ import Base_Url_Server from "../../Constants/baseUrl";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import CircularProgress from "@mui/material/CircularProgress";
+import { initiateCheckout } from "../../Services/paymentService";
+import { useNavigate } from "react-router-dom";
 function LibraryPage() {
   const store = useContext(dataContext);
+  const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [books, setBooks] = useState(null);
   const [categories, setCategories] = useState(null);
 
-  const [modal, setModal] = useState(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const [filter, setFilter] = useState(false);
   const [search, setSearch] = useState("");
@@ -37,6 +40,36 @@ function LibraryPage() {
     setMax("");
     setLanguage("");
   }
+
+  // Tek PDF satın alma
+  const handleBuyPdf = async (pdf) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const data = {
+        type: "single-pdf",
+        pdfId: pdf.id,
+        amount: pdf.price,
+      };
+
+      const response = await initiateCheckout(data, token);
+
+      // Ödeme URL'ine yönlendir
+      if (response?.data?.payment?.paymentUrl) {
+        window.location.href = response.data.payment.paymentUrl;
+      } else {
+        throw new Error("Ödəniş URL-i alınmadı");
+      }
+    } catch (error) {
+      console.error("Ödəniş xətası:", error);
+      alert("Ödəniş zamanı xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userID = localStorage.getItem("user");
@@ -71,58 +104,49 @@ function LibraryPage() {
 
   useEffect(() => {
     setLoader(true);
+    const token = localStorage.getItem("token");
+
     axios
       .get(
         Base_Url_Server +
-          `pdfs?page=${page}&search=${search}&language=${language}&categoryId=${categoryId}&minPrice=${min}&maxPrice=${max}&startDate=${startDate}&endDate=${endDate}`
+          `pdfs?page=${page}&search=${search}&language=${language}&categoryId=${categoryId}&minPrice=${min}&maxPrice=${max}&startDate=${startDate}&endDate=${endDate}`,
+        token
+          ? {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          : {}
       )
       .then((res) => {
         setLoader(false);
-        setBooks(res.data.data.pdfs);
+        const pdfs = res.data.data.pdfs;
+        setBooks(pdfs);
         setPageCount(res.data.data.pagination.total_pages);
+
+        // Debug log
+        console.log("📚 PDFs loaded:", pdfs.length);
+        console.log(
+          "🔍 First PDF access info:",
+          pdfs[0]?.hasAccess,
+          pdfs[0]?.accessType
+        );
+        console.log(
+          "📋 All PDFs access info:",
+          pdfs.map((p) => ({
+            id: p.id,
+            title: p.title,
+            hasAccess: p.hasAccess,
+            accessType: p.accessType,
+          }))
+        );
+
+        const accessibleCount = pdfs.filter((p) => p.hasAccess).length;
+        console.log(`✅ Əlçatan PDF-lər: ${accessibleCount} / ${pdfs.length}`);
       });
   }, [search, categoryId, min, max, endDate, startDate, page, language]);
   console.log(books);
   return (
     <>
       <section className={styles.library}>
-        {modal && (
-          <div className={styles.modal}>
-            <div
-              className={styles.glass}
-              onClick={() => {
-                setModal(null);
-              }}
-            ></div>
-            <div className={styles.content}>
-              <div className={styles.body}>
-                <div className={styles.head}>
-                  <p>{books && modal && modal?.title}</p>
-                  <div className={styles.info}>
-                    <span>{modal?.created_at?.split("T")[0]}</span>
-                    <span>
-                      {modal?.category?.name} |{" "}
-                      {modal?.language?.toLocaleUpperCase()}
-                    </span>
-                  </div>
-                </div>
-                <div className={styles.text}>
-                  <p>{modal?.description}</p>
-                </div>
-              </div>
-              <div className={styles.footer}>
-                {store.user.data?.subscriptions[0].plan == "none" ? (
-                  <>
-                    <button>Bir dəfəlik al</button>
-                    <button>Abunəlik əldə et</button>
-                  </>
-                ) : (
-                  <button>Hesabına əlavə et </button>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
         <div className={styles.hero}>
           <div className={styles.bgImage}>
             <img src={bg} alt="accountant" />
@@ -261,14 +285,34 @@ function LibraryPage() {
                           <span>{e.category?.name}</span>
                         </div>
                         <div className={styles.cardButtons}>
-                          <span
-                            onClick={() => {
-                              setModal(books[i]);
-                            }}
-                          >
-                            <span>PDF-i əldə et</span>
-                            <b>{e.price} AZN</b>
-                          </span>
+                          {e.hasAccess ? (
+                            <span
+                              onClick={() => {
+                                // PDF URL-ni gizlədək - downloadUrl istifadə edək
+                                if (e.downloadUrl) {
+                                  window.open(e.downloadUrl, "_blank");
+                                } else {
+                                  navigate(`/pdf/${e.id}`);
+                                }
+                              }}
+                              className={styles.accessible}
+                            >
+                              <span>
+                                {e.accessType === "subscription"
+                                  ? "Abunəliklə Əlçatandır"
+                                  : "Alınıb - Əlçatandır"}
+                              </span>
+                            </span>
+                          ) : (
+                            <span
+                              onClick={() => {
+                                navigate(`/library/${e.id}`);
+                              }}
+                            >
+                              <span>PDF-i əldə et</span>
+                              <b>{e.price} AZN</b>
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -7,7 +7,12 @@ export const DataProvider = ({ children }) => {
   const [adminSideBar, setAdminSideBar] = useState(false);
   const [user, setUser] = useState(null);
   const [admin, setAdmin] = useState(null);
+  const [loader, setLoader] = useState(false);
   const store = {
+    loader: {
+      data: loader,
+      setData: setLoader,
+    },
     admin: {
       data: admin,
       setData: setAdmin,

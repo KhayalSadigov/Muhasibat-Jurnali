@@ -12,17 +12,7 @@ import Base_Url_Server from "../../Constants/baseUrl";
 function Header() {
   const navigator = useNavigate();
   const store = useContext(dataContext);
-  const [categories, setCategories] = useState(null);
-  useEffect(() => {
-    axios.get(Base_Url_Server + "categories/pdfs").then((res) => {
-      setCategories(res.data.data.categories);
-    });
-  }, []);
-  // Aktiv səhifə yoxlaması
-  const isActivePage = (paths) => {
-    const currentPath = window.location.pathname;
-    return paths.some((path) => currentPath.includes(path));
-  };
+  console.log(store.user.data);
 
   // Hüquqi səhifələr üçün yol yoxlaması
   const isLegalPage = () => {

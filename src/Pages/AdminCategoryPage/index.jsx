@@ -37,12 +37,13 @@ function AdminCategoryPage() {
         });
     }
   }, []);
-  console.log(categories);
   useEffect(() => {
+    store.loader.setData(true);
     axios
       .get(Base_Url_Server + "categories")
       .then((res) => setCategories(res.data.data.categories))
-      .catch((err) => console.log("Kateqoriya çəkilmədi:", err));
+      .catch((err) => console.log("Kateqoriya çəkilmədi:", err))
+      .finally(() => store.loader.setData(false));
   }, []);
 
   const handleAddCategory = async (e) => {

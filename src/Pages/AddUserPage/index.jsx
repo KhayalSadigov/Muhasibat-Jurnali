@@ -4,16 +4,25 @@ import axios from "axios";
 import Base_Url_Server from "../../Constants/baseUrl";
 import { useNavigate } from "react-router-dom";
 import dataContext from "../../Contexts/GlobalState";
+import Swal from "sweetalert2";
 
 function AddUserPage() {
   const store = useContext(dataContext);
   const navigate = useNavigate();
+
   useEffect(() => {
     const tokenAdmin = localStorage.getItem("tokenAdmin");
     const adminID = localStorage.getItem("admin");
     if (!tokenAdmin || !adminID) {
       store.admin.setData(null);
-      navigate("/admin/login");
+      Swal.fire({
+        title: "Giriş tələb olunur",
+        text: "Admin hesabı ilə daxil olun!",
+        icon: "warning",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate("/admin/login");
+      });
     } else {
       axios
         .get(Base_Url_Server + "users/" + adminID, {
@@ -23,13 +32,19 @@ function AddUserPage() {
         })
         .then((response) => {
           store.admin.setData(response.data.data.user);
-          console.log(response.data.data.user);
         })
         .catch(() => {
           store.admin.setData(null);
           localStorage.removeItem("tokenAdmin");
           localStorage.removeItem("admin");
-          navigate("/admin/login");
+          Swal.fire({
+            title: "Giriş xətası",
+            text: "Token etibarsızdır, yenidən daxil olun!",
+            icon: "error",
+            confirmButtonText: "OK",
+          }).then(() => {
+            navigate("/admin/login");
+          });
         });
     }
   }, []);
@@ -42,6 +57,8 @@ function AddUserPage() {
     subscription: "none",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -50,16 +67,55 @@ function AddUserPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newUser = {
-      id: Date.now(),
-      ...formData,
-      createdAt: new Date().toISOString().split("T")[0],
-      lastLogin: null,
-    };
-    console.log("Yeni istifadəçi:", newUser);
-    // burda API-ə göndərə və ya state-ə əlavə edə bilərsən
+
+    if (!formData.username || !formData.email || !formData.password) {
+      Swal.fire({
+        title: "Xəta ❌",
+        text: "Bütün xanaları doldurun!",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const tokenAdmin = localStorage.getItem("tokenAdmin");
+
+      await axios.post(Base_Url_Server + "users", formData, {
+        headers: {
+          Authorization: `Bearer ${tokenAdmin}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setLoading(false);
+
+      Swal.fire({
+        title: "Uğur ✅",
+        text: "İstifadəçi uğurla əlavə olundu!",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        setFormData({
+          username: "",
+          email: "",
+          password: "",
+          role: "user",
+          subscription: "none",
+        });
+      });
+    } catch (err) {
+      setLoading(false);
+      Swal.fire({
+        title: "Xəta ❌",
+        text: err.response?.data?.message || "İstifadəçi əlavə olunmadı!",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
   };
 
   return (
@@ -124,7 +180,9 @@ function AddUserPage() {
             </select>
           </div>
 
-          <button type="submit">Əlavə Et</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Əlavə olunur..." : "Əlavə Et"}
+          </button>
         </form>
       </div>
     </div>

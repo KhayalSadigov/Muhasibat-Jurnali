@@ -9,6 +9,7 @@ import Base_Url_Server from "../../Constants/baseUrl";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router-dom";
 
 function NewsPage() {
   const [news, setNews] = useState(null);
@@ -23,6 +24,8 @@ function NewsPage() {
   const [endDate, setEndDate] = useState("");
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
+
+  const navigate = useNavigate();
 
   function handleReset() {
     setSearch("");
@@ -144,8 +147,7 @@ function NewsPage() {
                     id="startDate"
                     placeholder="Bu tarixdən"
                   />
-                  {/* <input type="date" id="endDate" placeholder="Bu tarixdən" /> */}
-                </div>
+s                </div>
                 <select
                   value={categoryId}
                   onChange={(e) => {
@@ -173,10 +175,17 @@ function NewsPage() {
             style={loader ? { display: "none" } : {}}
             className={styles.container}
           >
-            {news &&
+            {news ? (
+              news &&
               news?.map((e, i) => {
                 return (
-                  <div key={i} className={styles.card}>
+                  <div
+                    key={i}
+                    className={styles.card}
+                    onClick={() => {
+                      navigate(`/news/${e.id}`);
+                    }}
+                  >
                     <div className={styles.cardContent}>
                       <div className={styles.cardImage}>
                         <img
@@ -199,7 +208,12 @@ function NewsPage() {
                     </div>
                   </div>
                 );
-              })}
+              })
+            ) : (
+              <div className={styles.loader}>
+                <CircularProgress />
+              </div>
+            )}
           </div>
           <div
             style={loader ? {} : { display: "none" }}
