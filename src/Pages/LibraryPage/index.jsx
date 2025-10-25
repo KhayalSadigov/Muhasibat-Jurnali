@@ -29,7 +29,8 @@ function LibraryPage() {
   const [max, setMax] = useState("");
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const [language, setLanguage] = useState("az");
+
+  const [language, setLanguage] = useState("");
   console.log(store.user.data);
   function handleReset() {
     setSearch("");
@@ -121,7 +122,7 @@ function LibraryPage() {
         const pdfs = res.data.data.pdfs;
         setBooks(pdfs);
         setPageCount(res.data.data.pagination.total_pages);
-
+        console.log(res)
         // Debug log
         console.log("📚 PDFs loaded:", pdfs.length);
         console.log(
@@ -327,7 +328,7 @@ function LibraryPage() {
             <CircularProgress />
           </div>
           <div
-            style={pageCount == 1 || pageCount == 0 ? { display: "none" } : {}}
+            // style={pageCount == 1 || pageCount == 0 ? { display: "none" } : {}}
             className={styles.pagination}
           >
             <p
